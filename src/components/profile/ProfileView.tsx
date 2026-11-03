@@ -215,7 +215,9 @@ export function ProfileView({
           ...(prefs.themeOverrides[scope]?.fontPairing ? { fontFamily: fontPairingOf(design.fontPairing).body } : {}),
         }
       : buttonStyle;
-    return glass ? { ...(own ?? {}), ...glass } : own;
+    // Button text colour lives under Typography, so it applies even without custom button shapes.
+    const withText = design.buttonTextColor ? { ...(own ?? {}), color: design.buttonTextColor } : own;
+    return glass ? { ...(withText ?? {}), ...glass } : withText;
   };
   const iconOnly = (prefs.buttonsCustom || prefs.customDesign) && prefs.buttonShape === "icon";
   /** Eigen canvas- en patroonkleuren overschrijven het thema, indien gekozen. */

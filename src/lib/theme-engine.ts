@@ -173,7 +173,10 @@ export function applyScopedPatch(
   patch: ScopeOverride,
 ): { global: GlassTokens; overrides: ThemeOverrides } {
   if (scope === "all") return { global: { ...global, ...patch }, overrides };
-  return { global, overrides: { ...overrides, [scope]: { ...(overrides[scope] ?? {}), ...patch } } };
+  const merged: Record<string, unknown> = { ...(overrides[scope] ?? {}), ...patch };
+  // A cleared value (null) means "follow the default" and is not stored as an override.
+  for (const key of Object.keys(merged)) if (merged[key] === null) delete merged[key];
+  return { global, overrides: { ...overrides, [scope]: merged as ScopeOverride } };
 }
 
 export function resetScope(overrides: ThemeOverrides, scope: ComponentScope): ThemeOverrides {
