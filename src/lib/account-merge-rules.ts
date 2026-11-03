@@ -43,6 +43,15 @@ export const MERGE_TABLES: Readonly<Record<string, MergeTableRule>> = {
   // granted for. The FK cascades on delete, so a merge is refused instead of
   // silently moving or dropping a consent record.
   parent_authorizations: r("skip"),
+  // Omni ingestion and live-presence rows (0185-0190) were added after the merge
+  // manifest was reviewed: until a move strategy is reviewed, a secondary
+  // account that owns any of them blocks the merge instead of losing data.
+  ephemeral_statuses: r("skip"),
+  presence_broadcast_jobs: r("skip"),
+  omni_ingest_tokens: r("skip"),
+  omni_jobs: r("skip"),
+  omni_matrix_items: r("skip"),
+  social_grid_items: r("skip"),
 
   // Append-only audit trails without FK: history stays as written.
   security_audit_logs: r("retain"),
