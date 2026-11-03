@@ -1746,5 +1746,17 @@
   "visits.noneYet": "Noch keine Besuche erfasst. Teile deinen Profillink oder QR-Code, um deine ersten Besucher zu sehen.",
   "visits.prev": "Zurück",
   "visits.next": "Weiter",
-  "visits.page": "Seite {{page}} von {{pages}}"
+  "visits.page": "Seite {{page}} von {{pages}}",
+  "card.title": "ROUT Card",
+  "card.description": "Deine Visitenkarte in 3D. Tippen zum Umdrehen; dein QR-Code ist auf der Rückseite.",
+  "card.notFound": "Dieses Profil ist nicht öffentlich, daher gibt es keine Karte.",
+  "card.flip": "Umdrehen",
+  "card.gyro": "Mit dem Handy neigen",
+  "card.gyroDenied": "Bewegungssensor nicht verfügbar.",
+  "card.vcf": "Als Kontakt speichern (.vcf)",
+  "card.finish.metal": "Metall",
+  "card.finish.glass": "Glas",
+  "card.finish.holo": "Holo",
+  "card.open": "Karte öffnen",
+  "card.studioHelp": "3D-Visitenkarte, Google Wallet, Apple Wallet und Kontaktdatei."
 }

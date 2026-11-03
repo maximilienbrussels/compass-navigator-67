@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Copy, FileDown, ImageDown, Nfc, QrCode, Share2, Wallet } from "lucide-react";
-import { WalletDialog } from "@/components/wallet/WalletDialog";
+import { RoutCardDialog } from "@/components/wallet/RoutCardDialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -136,7 +136,7 @@ export function ShareMenu({ url, handle, name, bio, avatarUrl, showNfc, qrStyle,
         </DropdownMenuContent>
       </DropdownMenu>
       {showNfc && <NfcDialog open={nfcOpen} onOpenChange={setNfcOpen} />}
-      {handle && <WalletDialog open={walletOpen} onOpenChange={setWalletOpen} kind="profile" id={handle} />}
+      {handle && <RoutCardDialog open={walletOpen} onOpenChange={setWalletOpen} handle={handle} />}
       <Dialog open={qrOpen} onOpenChange={setQrOpen}>
         <DialogContent className="flex max-h-[100dvh] w-[100vw] max-w-[100vw] flex-col items-center justify-center gap-4 border-0 sm:max-w-[min(90vw,90vh)] sm:rounded-2xl">
           <DialogHeader className="sr-only">
