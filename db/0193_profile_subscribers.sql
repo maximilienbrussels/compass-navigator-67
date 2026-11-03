@@ -45,7 +45,7 @@ create policy profile_subscribers_owner_delete on public.profile_subscribers
 create or replace function public.rout_subscriber_join(
   p_handle text, p_hash text, p_ciphertext text, p_iv text,
   p_confirm_hash text, p_unsubscribe_hash text, p_locale text
-) returns table (outcome text, owner_user_id uuid, space text, list_id integer)
+) returns table (outcome text, out_owner uuid, out_space text, out_list integer)
 language plpgsql volatile security definer set search_path = pg_catalog, public as $$
 declare
   v_owner uuid;
@@ -55,6 +55,7 @@ declare
   v_list integer;
   v_status text;
 begin
+  #variable_conflict use_column
   select p.id, 'root', p.blocks into v_owner, v_space, v_blocks
     from public.profiles p
    where lower(p.username) = lower(p_handle) and coalesce(p.status, 'active') = 'active'
