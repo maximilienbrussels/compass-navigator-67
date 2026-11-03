@@ -198,8 +198,10 @@ import { Route as AuthenticatedAdminBrandsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminConsoleRouteImport } from './routes/_authenticated/admin.console'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminCustomBadgesRouteImport } from './routes/_authenticated/admin.custom-badges'
+import { Route as AuthenticatedAdminFeaturesRouteImport } from './routes/_authenticated/admin.features'
 import { Route as AuthenticatedAdminFinanceRouteImport } from './routes/_authenticated/admin.finance'
 import { Route as AuthenticatedAdminGiftCardsRouteImport } from './routes/_authenticated/admin.gift-cards'
+import { Route as AuthenticatedAdminHandlesRouteImport } from './routes/_authenticated/admin.handles'
 import { Route as AuthenticatedAdminInfraRouteImport } from './routes/_authenticated/admin.infra'
 import { Route as AuthenticatedAdminIntegrationsRouteImport } from './routes/_authenticated/admin.integrations'
 import { Route as AuthenticatedAdminMembersRouteImport } from './routes/_authenticated/admin.members'
@@ -210,6 +212,7 @@ import { Route as AuthenticatedAdminSubdomainsRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminTeamRouteImport } from './routes/_authenticated/admin.team'
 import { Route as AuthenticatedAdminVerificationsRouteImport } from './routes/_authenticated/admin.verifications'
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin.webhooks'
+import { Route as AuthenticatedAdminWorkspacesRouteImport } from './routes/_authenticated/admin.workspaces'
 import { Route as AuthenticatedConsoleIndexRouteImport } from './routes/_authenticated/console.index'
 import { Route as AuthenticatedConsoleApiRouteImport } from './routes/_authenticated/console.api'
 import { Route as AuthenticatedConsoleAppsRouteImport } from './routes/_authenticated/console.apps'
@@ -1337,6 +1340,12 @@ const AuthenticatedAdminCustomBadgesRoute =
     path: '/custom-badges',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminFeaturesRoute =
+  AuthenticatedAdminFeaturesRouteImport.update({
+    id: '/features',
+    path: '/features',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminFinanceRoute =
   AuthenticatedAdminFinanceRouteImport.update({
     id: '/finance',
@@ -1347,6 +1356,12 @@ const AuthenticatedAdminGiftCardsRoute =
   AuthenticatedAdminGiftCardsRouteImport.update({
     id: '/gift-cards',
     path: '/gift-cards',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminHandlesRoute =
+  AuthenticatedAdminHandlesRouteImport.update({
+    id: '/handles',
+    path: '/handles',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminInfraRoute = AuthenticatedAdminInfraRouteImport.update({
@@ -1403,6 +1418,12 @@ const AuthenticatedAdminWebhooksRoute =
   AuthenticatedAdminWebhooksRouteImport.update({
     id: '/webhooks',
     path: '/webhooks',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminWorkspacesRoute =
+  AuthenticatedAdminWorkspacesRouteImport.update({
+    id: '/workspaces',
+    path: '/workspaces',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedConsoleIndexRoute =
@@ -2544,8 +2565,10 @@ export interface FileRoutesByFullPath {
   '/admin/console': typeof AuthenticatedAdminConsoleRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/custom-badges': typeof AuthenticatedAdminCustomBadgesRoute
+  '/admin/features': typeof AuthenticatedAdminFeaturesRoute
   '/admin/finance': typeof AuthenticatedAdminFinanceRoute
   '/admin/gift-cards': typeof AuthenticatedAdminGiftCardsRoute
+  '/admin/handles': typeof AuthenticatedAdminHandlesRoute
   '/admin/infra': typeof AuthenticatedAdminInfraRoute
   '/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
@@ -2556,6 +2579,7 @@ export interface FileRoutesByFullPath {
   '/admin/team': typeof AuthenticatedAdminTeamRoute
   '/admin/verifications': typeof AuthenticatedAdminVerificationsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/admin/workspaces': typeof AuthenticatedAdminWorkspacesRoute
   '/console/api': typeof AuthenticatedConsoleApiRoute
   '/console/apps': typeof AuthenticatedConsoleAppsRouteWithChildren
   '/console/billing': typeof AuthenticatedConsoleBillingRoute
@@ -2903,8 +2927,10 @@ export interface FileRoutesByTo {
   '/admin/console': typeof AuthenticatedAdminConsoleRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/custom-badges': typeof AuthenticatedAdminCustomBadgesRoute
+  '/admin/features': typeof AuthenticatedAdminFeaturesRoute
   '/admin/finance': typeof AuthenticatedAdminFinanceRoute
   '/admin/gift-cards': typeof AuthenticatedAdminGiftCardsRoute
+  '/admin/handles': typeof AuthenticatedAdminHandlesRoute
   '/admin/infra': typeof AuthenticatedAdminInfraRoute
   '/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/admin/members': typeof AuthenticatedAdminMembersRoute
@@ -2915,6 +2941,7 @@ export interface FileRoutesByTo {
   '/admin/team': typeof AuthenticatedAdminTeamRoute
   '/admin/verifications': typeof AuthenticatedAdminVerificationsRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/admin/workspaces': typeof AuthenticatedAdminWorkspacesRoute
   '/console/api': typeof AuthenticatedConsoleApiRoute
   '/console/billing': typeof AuthenticatedConsoleBillingRoute
   '/console/connectors': typeof AuthenticatedConsoleConnectorsRoute
@@ -3277,8 +3304,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/console': typeof AuthenticatedAdminConsoleRoute
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/custom-badges': typeof AuthenticatedAdminCustomBadgesRoute
+  '/_authenticated/admin/features': typeof AuthenticatedAdminFeaturesRoute
   '/_authenticated/admin/finance': typeof AuthenticatedAdminFinanceRoute
   '/_authenticated/admin/gift-cards': typeof AuthenticatedAdminGiftCardsRoute
+  '/_authenticated/admin/handles': typeof AuthenticatedAdminHandlesRoute
   '/_authenticated/admin/infra': typeof AuthenticatedAdminInfraRoute
   '/_authenticated/admin/integrations': typeof AuthenticatedAdminIntegrationsRoute
   '/_authenticated/admin/members': typeof AuthenticatedAdminMembersRoute
@@ -3289,6 +3318,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/team': typeof AuthenticatedAdminTeamRoute
   '/_authenticated/admin/verifications': typeof AuthenticatedAdminVerificationsRoute
   '/_authenticated/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/_authenticated/admin/workspaces': typeof AuthenticatedAdminWorkspacesRoute
   '/_authenticated/console/api': typeof AuthenticatedConsoleApiRoute
   '/_authenticated/console/apps': typeof AuthenticatedConsoleAppsRouteWithChildren
   '/_authenticated/console/billing': typeof AuthenticatedConsoleBillingRoute
@@ -3653,8 +3683,10 @@ export interface FileRouteTypes {
     | '/admin/console'
     | '/admin/contact'
     | '/admin/custom-badges'
+    | '/admin/features'
     | '/admin/finance'
     | '/admin/gift-cards'
+    | '/admin/handles'
     | '/admin/infra'
     | '/admin/integrations'
     | '/admin/members'
@@ -3665,6 +3697,7 @@ export interface FileRouteTypes {
     | '/admin/team'
     | '/admin/verifications'
     | '/admin/webhooks'
+    | '/admin/workspaces'
     | '/console/api'
     | '/console/apps'
     | '/console/billing'
@@ -4012,8 +4045,10 @@ export interface FileRouteTypes {
     | '/admin/console'
     | '/admin/contact'
     | '/admin/custom-badges'
+    | '/admin/features'
     | '/admin/finance'
     | '/admin/gift-cards'
+    | '/admin/handles'
     | '/admin/infra'
     | '/admin/integrations'
     | '/admin/members'
@@ -4024,6 +4059,7 @@ export interface FileRouteTypes {
     | '/admin/team'
     | '/admin/verifications'
     | '/admin/webhooks'
+    | '/admin/workspaces'
     | '/console/api'
     | '/console/billing'
     | '/console/connectors'
@@ -4385,8 +4421,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/console'
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/custom-badges'
+    | '/_authenticated/admin/features'
     | '/_authenticated/admin/finance'
     | '/_authenticated/admin/gift-cards'
+    | '/_authenticated/admin/handles'
     | '/_authenticated/admin/infra'
     | '/_authenticated/admin/integrations'
     | '/_authenticated/admin/members'
@@ -4397,6 +4435,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/team'
     | '/_authenticated/admin/verifications'
     | '/_authenticated/admin/webhooks'
+    | '/_authenticated/admin/workspaces'
     | '/_authenticated/console/api'
     | '/_authenticated/console/apps'
     | '/_authenticated/console/billing'
@@ -6100,6 +6139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCustomBadgesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/features': {
+      id: '/_authenticated/admin/features'
+      path: '/features'
+      fullPath: '/admin/features'
+      preLoaderRoute: typeof AuthenticatedAdminFeaturesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/finance': {
       id: '/_authenticated/admin/finance'
       path: '/finance'
@@ -6112,6 +6158,13 @@ declare module '@tanstack/react-router' {
       path: '/gift-cards'
       fullPath: '/admin/gift-cards'
       preLoaderRoute: typeof AuthenticatedAdminGiftCardsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/handles': {
+      id: '/_authenticated/admin/handles'
+      path: '/handles'
+      fullPath: '/admin/handles'
+      preLoaderRoute: typeof AuthenticatedAdminHandlesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/infra': {
@@ -6182,6 +6235,13 @@ declare module '@tanstack/react-router' {
       path: '/webhooks'
       fullPath: '/admin/webhooks'
       preLoaderRoute: typeof AuthenticatedAdminWebhooksRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/workspaces': {
+      id: '/_authenticated/admin/workspaces'
+      path: '/workspaces'
+      fullPath: '/admin/workspaces'
+      preLoaderRoute: typeof AuthenticatedAdminWorkspacesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/console/': {
@@ -7396,8 +7456,10 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminConsoleRoute: typeof AuthenticatedAdminConsoleRoute
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminCustomBadgesRoute: typeof AuthenticatedAdminCustomBadgesRoute
+  AuthenticatedAdminFeaturesRoute: typeof AuthenticatedAdminFeaturesRoute
   AuthenticatedAdminFinanceRoute: typeof AuthenticatedAdminFinanceRoute
   AuthenticatedAdminGiftCardsRoute: typeof AuthenticatedAdminGiftCardsRoute
+  AuthenticatedAdminHandlesRoute: typeof AuthenticatedAdminHandlesRoute
   AuthenticatedAdminInfraRoute: typeof AuthenticatedAdminInfraRoute
   AuthenticatedAdminIntegrationsRoute: typeof AuthenticatedAdminIntegrationsRoute
   AuthenticatedAdminMembersRoute: typeof AuthenticatedAdminMembersRoute
@@ -7408,6 +7470,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminTeamRoute: typeof AuthenticatedAdminTeamRoute
   AuthenticatedAdminVerificationsRoute: typeof AuthenticatedAdminVerificationsRoute
   AuthenticatedAdminWebhooksRoute: typeof AuthenticatedAdminWebhooksRoute
+  AuthenticatedAdminWorkspacesRoute: typeof AuthenticatedAdminWorkspacesRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -7416,8 +7479,10 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminConsoleRoute: AuthenticatedAdminConsoleRoute,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminCustomBadgesRoute: AuthenticatedAdminCustomBadgesRoute,
+  AuthenticatedAdminFeaturesRoute: AuthenticatedAdminFeaturesRoute,
   AuthenticatedAdminFinanceRoute: AuthenticatedAdminFinanceRoute,
   AuthenticatedAdminGiftCardsRoute: AuthenticatedAdminGiftCardsRoute,
+  AuthenticatedAdminHandlesRoute: AuthenticatedAdminHandlesRoute,
   AuthenticatedAdminInfraRoute: AuthenticatedAdminInfraRoute,
   AuthenticatedAdminIntegrationsRoute: AuthenticatedAdminIntegrationsRoute,
   AuthenticatedAdminMembersRoute: AuthenticatedAdminMembersRoute,
@@ -7428,6 +7493,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminTeamRoute: AuthenticatedAdminTeamRoute,
   AuthenticatedAdminVerificationsRoute: AuthenticatedAdminVerificationsRoute,
   AuthenticatedAdminWebhooksRoute: AuthenticatedAdminWebhooksRoute,
+  AuthenticatedAdminWorkspacesRoute: AuthenticatedAdminWorkspacesRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
