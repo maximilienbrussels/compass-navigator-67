@@ -49,3 +49,8 @@
 - [x] Fase 4: archive view, non-navigating preview, countdown block, optional bento tile sizes
 - [ ] Signup confirmation mails need the SMTP mailbox passwords (SMTP_PASS_SYSTEM); until then signups stay "pending"
 - [ ] Pre-existing failing tests: OmniIngestPanel (expects Dutch labels, page bundle not loaded in test) and ProfileHubPicker (mock lacks createMiddleware)
+
+## Admin & Studio (request 2026-11-03 16:33)
+- [ ] Admin portal audit: every manageable feature reachable (workspaces/business verification, requests, usernames, feature switches)
+- [ ] Studio profile header order: avatar, name, username, location, bio
+- [ ] Button shape: move button text colour to Typography; replace with optional button border colour (on/off)
