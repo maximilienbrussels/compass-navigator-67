@@ -256,6 +256,7 @@ import { Route as ApiSnapchatStartRouteImport } from './routes/api_.snapchat.sta
 import { Route as ApiSpotifyStartRouteImport } from './routes/api_.spotify.start'
 import { Route as ApiUploadPresignRouteImport } from './routes/api_.upload.presign'
 import { Route as ApiV1PresenceRouteImport } from './routes/api_.v1.presence'
+import { Route as ApiWalletGoogleRouteImport } from './routes/api_.wallet.google'
 import { Route as ApiYoutubeStartRouteImport } from './routes/api_.youtube.start'
 import { Route as AuthMastodonCallbackRouteImport } from './routes/auth_.mastodon.callback'
 import { Route as ClaimWorkspaceTokenRouteImport } from './routes/claim_.workspace.$token'
@@ -1656,6 +1657,11 @@ const ApiV1PresenceRoute = ApiV1PresenceRouteImport.update({
   path: '/api/v1/presence',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiWalletGoogleRoute = ApiWalletGoogleRouteImport.update({
+  id: '/api_/wallet/google',
+  path: '/api/wallet/google',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiYoutubeStartRoute = ApiYoutubeStartRouteImport.update({
   id: '/api_/youtube/start',
   path: '/api/youtube/start',
@@ -2621,6 +2627,7 @@ export interface FileRoutesByFullPath {
   '/api/spotify/start': typeof ApiSpotifyStartRoute
   '/api/upload/presign': typeof ApiUploadPresignRoute
   '/api/v1/presence': typeof ApiV1PresenceRoute
+  '/api/wallet/google': typeof ApiWalletGoogleRoute
   '/api/youtube/start': typeof ApiYoutubeStartRoute
   '/auth/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/claim/workspace/$token': typeof ClaimWorkspaceTokenRoute
@@ -2982,6 +2989,7 @@ export interface FileRoutesByTo {
   '/api/spotify/start': typeof ApiSpotifyStartRoute
   '/api/upload/presign': typeof ApiUploadPresignRoute
   '/api/v1/presence': typeof ApiV1PresenceRoute
+  '/api/wallet/google': typeof ApiWalletGoogleRoute
   '/api/youtube/start': typeof ApiYoutubeStartRoute
   '/auth/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/claim/workspace/$token': typeof ClaimWorkspaceTokenRoute
@@ -3360,6 +3368,7 @@ export interface FileRoutesById {
   '/api_/spotify/start': typeof ApiSpotifyStartRoute
   '/api_/upload/presign': typeof ApiUploadPresignRoute
   '/api_/v1/presence': typeof ApiV1PresenceRoute
+  '/api_/wallet/google': typeof ApiWalletGoogleRoute
   '/api_/youtube/start': typeof ApiYoutubeStartRoute
   '/auth_/mastodon/callback': typeof AuthMastodonCallbackRoute
   '/claim_/workspace/$token': typeof ClaimWorkspaceTokenRoute
@@ -3739,6 +3748,7 @@ export interface FileRouteTypes {
     | '/api/spotify/start'
     | '/api/upload/presign'
     | '/api/v1/presence'
+    | '/api/wallet/google'
     | '/api/youtube/start'
     | '/auth/mastodon/callback'
     | '/claim/workspace/$token'
@@ -4100,6 +4110,7 @@ export interface FileRouteTypes {
     | '/api/spotify/start'
     | '/api/upload/presign'
     | '/api/v1/presence'
+    | '/api/wallet/google'
     | '/api/youtube/start'
     | '/auth/mastodon/callback'
     | '/claim/workspace/$token'
@@ -4477,6 +4488,7 @@ export interface FileRouteTypes {
     | '/api_/spotify/start'
     | '/api_/upload/presign'
     | '/api_/v1/presence'
+    | '/api_/wallet/google'
     | '/api_/youtube/start'
     | '/auth_/mastodon/callback'
     | '/claim_/workspace/$token'
@@ -4738,6 +4750,7 @@ export interface RootRouteChildren {
   ApiSpotifyStartRoute: typeof ApiSpotifyStartRoute
   ApiUploadPresignRoute: typeof ApiUploadPresignRoute
   ApiV1PresenceRoute: typeof ApiV1PresenceRoute
+  ApiWalletGoogleRoute: typeof ApiWalletGoogleRoute
   ApiYoutubeStartRoute: typeof ApiYoutubeStartRoute
   AuthMastodonCallbackRoute: typeof AuthMastodonCallbackRoute
   ClaimWorkspaceTokenRoute: typeof ClaimWorkspaceTokenRoute
@@ -6545,6 +6558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1PresenceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api_/wallet/google': {
+      id: '/api_/wallet/google'
+      path: '/api/wallet/google'
+      fullPath: '/api/wallet/google'
+      preLoaderRoute: typeof ApiWalletGoogleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api_/youtube/start': {
       id: '/api_/youtube/start'
       path: '/api/youtube/start'
@@ -8153,6 +8173,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSpotifyStartRoute: ApiSpotifyStartRoute,
   ApiUploadPresignRoute: ApiUploadPresignRoute,
   ApiV1PresenceRoute: ApiV1PresenceRoute,
+  ApiWalletGoogleRoute: ApiWalletGoogleRoute,
   ApiYoutubeStartRoute: ApiYoutubeStartRoute,
   AuthMastodonCallbackRoute: AuthMastodonCallbackRoute,
   ClaimWorkspaceTokenRoute: ClaimWorkspaceTokenRoute,
