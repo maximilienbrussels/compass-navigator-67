@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { SITE_ORIGIN } from "@/lib/site";
+import { ogLocale } from "@/lib/social-meta";
 
 /**
  * Unieke deel-kaart per publieke pagina: eigen afbeelding, kaderkleur
