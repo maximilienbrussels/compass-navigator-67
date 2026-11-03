@@ -1214,6 +1214,10 @@ export function ProfileEditor({ variant = "verified", pageMode = "profile", onPa
                 onOpenAddDrawer={() => setDrawer(true)}
                 onAddKind={(kind, value) => addBlock(kind, value)}
                 handle={normalized || handle}
+                onImportMeta={({ displayName: name, tagline: line }) => {
+                  if (name) setDisplayName(name);
+                  if (line) setTagline(line);
+                }}
                 onWidget={(id) => {
                   if (id === "questions") {
                     setPref("questionsEnabled", true);
