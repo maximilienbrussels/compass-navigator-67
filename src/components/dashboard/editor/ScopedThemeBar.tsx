@@ -168,10 +168,21 @@ export function ScopedThemeBar({ prefs, setPref, scope = "all", showTypography =
               <span className="input-label block">Knopkleur</span>
               <input type="color" className="h-9 w-full rounded-md border border-border bg-background" value={design.buttonColor ?? "#000000"} onChange={(e) => patch({ buttonColor: e.target.value })} />
             </label>
-            <label className="space-y-1 text-xs">
-              <span className="input-label block">Knoptekstkleur</span>
-              <input type="color" className="h-9 w-full rounded-md border border-border bg-background" value={design.buttonTextColor ?? "#ffffff"} onChange={(e) => patch({ buttonTextColor: e.target.value })} />
-            </label>
+            <div className="space-y-1 text-xs">
+              <label className="flex items-center justify-between gap-2">
+                <span className="input-label block">Knoprand</span>
+                <Switch
+                  checked={Boolean(design.buttonBorderColor)}
+                  onCheckedChange={(on) => patch({ buttonBorderColor: on ? (design.buttonColor ?? "#000000") : null })}
+                  aria-label="Knoprand aan of uit"
+                />
+              </label>
+              {design.buttonBorderColor ? (
+                <input type="color" aria-label="Knoprandkleur" className="h-9 w-full rounded-md border border-border bg-background" value={design.buttonBorderColor} onChange={(e) => patch({ buttonBorderColor: e.target.value })} />
+              ) : (
+                <p className="text-[11px] text-muted-foreground">Uit: de knopstijl bepaalt de rand.</p>
+              )}
+            </div>
           </div>
           {scope === "all" && <>
             <Group label="Linkweergave">
@@ -208,9 +219,20 @@ export function ScopedThemeBar({ prefs, setPref, scope = "all", showTypography =
       )}
 
       {showTypography && (
-        <Group label="Typografie">
-          {FONT_PAIRINGS.map((f) => <StudioChip key={f.id} active={design.fontPairing === f.id} onClick={() => patch({ fontPairing: f.id as ScopeOverride["fontPairing"] })}>{f.label}</StudioChip>)}
-        </Group>
+        <div className="space-y-3">
+          <Group label="Typografie">
+            {FONT_PAIRINGS.map((f) => <StudioChip key={f.id} active={design.fontPairing === f.id} onClick={() => patch({ fontPairing: f.id as ScopeOverride["fontPairing"] })}>{f.label}</StudioChip>)}
+          </Group>
+          <div className="flex items-end gap-2 text-xs">
+            <label className="flex-1 space-y-1">
+              <span className="input-label block">Knoptekstkleur</span>
+              <input type="color" className="h-9 w-full rounded-md border border-border bg-background" value={design.buttonTextColor ?? "#ffffff"} onChange={(e) => patch({ buttonTextColor: e.target.value })} />
+            </label>
+            {design.buttonTextColor && (
+              <Button type="button" size="sm" variant="ghost" onClick={() => patch({ buttonTextColor: null })}>Automatisch</Button>
+            )}
+          </div>
+        </div>
       )}
     </section>
   );

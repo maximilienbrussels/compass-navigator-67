@@ -559,7 +559,19 @@ export function DesignButtonsTypographySection({
           </div>
           <div className="grid gap-3 pt-2 sm:grid-cols-2">
             <ColorField label="Knopkleur" value={prefs.buttonColor} onChange={(v) => setPref("buttonColor", v)} />
-            <ColorField label="Knoptekstkleur" value={prefs.buttonTextColor} onChange={(v) => setPref("buttonTextColor", v)} />
+            <div className="space-y-1.5">
+              <label className="flex items-center justify-between gap-3">
+                <span className="input-label">Knoprand</span>
+                <Switch
+                  checked={prefs.buttonBorderColor !== null}
+                  onCheckedChange={(on) => setPref("buttonBorderColor", on ? (t.accent ?? t.text) : null)}
+                  aria-label="Knoprand aan of uit"
+                />
+              </label>
+              {prefs.buttonBorderColor !== null && (
+                <ColorField label="Knoprandkleur" value={prefs.buttonBorderColor} onChange={(v) => setPref("buttonBorderColor", v)} placeholder={t.accent ?? t.text} />
+              )}
+            </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2"><p className="input-label">Knopgrootte</p><Select value={prefs.buttonSize} onValueChange={(v) => setPref("buttonSize", v as ProfileDisplayPrefs["buttonSize"])}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{BUTTON_SIZES.map((o) => <SelectItem key={o.id} value={o.id}>{o.label}</SelectItem>)}</SelectContent></Select></div>
@@ -586,7 +598,10 @@ export function DesignButtonsTypographySection({
           <div className="space-y-1.5"><p className="input-label">Titelgrootte ({prefs.titleScale}%)</p><Slider value={[prefs.titleScale]} min={80} max={180} step={5} onValueChange={([v]) => setPref("titleScale", v ?? 100)} /></div>
           <div className="space-y-1.5"><p className="input-label">Letterafstand ({prefs.titleLetterSpacing}px)</p><Slider value={[prefs.titleLetterSpacing]} min={-1} max={12} step={1} onValueChange={([v]) => setPref("titleLetterSpacing", v ?? 0)} /></div>
           <div className="space-y-1.5"><p className="input-label">Tekstgloed ({prefs.titleGlow}px)</p><Slider value={[prefs.titleGlow]} min={0} max={40} step={2} onValueChange={([v]) => setPref("titleGlow", v ?? 0)} /></div>
-          <ColorField label="Titelkleur" value={prefs.titleColor} onChange={(v) => setPref("titleColor", v)} placeholder={t.text} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <ColorField label="Titelkleur" value={prefs.titleColor} onChange={(v) => setPref("titleColor", v)} placeholder={t.text} />
+            <ColorField label="Knoptekstkleur" value={prefs.buttonTextColor} onChange={(v) => setPref("buttonTextColor", v)} placeholder={t.text} />
+          </div>
         </CustomCollapse>
       </section>}
     </div>
