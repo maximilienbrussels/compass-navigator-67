@@ -21,9 +21,11 @@ function shade(hex: string, amount: number): string {
 function loadImage(src: string): Promise<HTMLImageElement | null> {
   return new Promise((resolve) => {
     const img = new Image();
+    // A slow photo must never block the card: draw the initial instead.
+    const timer = setTimeout(() => resolve(null), 4000);
     img.decoding = "async";
-    img.onload = () => resolve(img);
-    img.onerror = () => resolve(null);
+    img.onload = () => { clearTimeout(timer); resolve(img); };
+    img.onerror = () => { clearTimeout(timer); resolve(null); };
     img.src = src;
   });
 }
