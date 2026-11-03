@@ -565,6 +565,13 @@ export function ProfileView({
           </span>
         )}
 
+        {/* Fixed header order: photo, name, username, location, bio — then trust details. */}
+        {(shownBio || profile.tagline) && (
+          <p className="mt-3 max-w-sm text-balance text-center text-sm" style={{ color: t.muted }}>
+            {shownBio || profile.tagline}
+          </p>
+        )}
+
         <MemberSinceBadge
           createdAt={profile.created_at_iso ?? profile.created_at ?? null}
           stamp={profile.genesis_stamp ?? null}
@@ -580,11 +587,6 @@ export function ProfileView({
           >
             <Mail className="h-3.5 w-3.5" aria-hidden />  {tx("profile.contactVia")} {aliasEmail}
           </a>
-        )}
-        {(shownBio || profile.tagline) && (
-          <p className="mt-3 max-w-sm text-balance text-center text-sm" style={{ color: t.muted }}>
-            {shownBio || profile.tagline}
-          </p>
         )}
 
         {usesSectionFallback(profile.blocks, "widget:reach") && profile.show_total_reach && (profile.total_reach_count ?? 0) > 0 && (
