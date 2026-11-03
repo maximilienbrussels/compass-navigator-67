@@ -18,7 +18,7 @@ import {
   subscriberKeyConfigured,
   subscriberTokenHash,
 } from "@/lib/subscribers/subscriber-crypto.server";
-import { buildSubscribersCsv, isSubscriberToken, normalizeSubscriberEmail, type SubscriberStatus } from "@/lib/subscribers/subscriber-rules";
+import { buildSubscribersCsv, isSubscriberToken, normalizeSubscriberEmail, type SubscriberCsvRow, type SubscriberStatus } from "@/lib/subscribers/subscriber-rules";
 
 type Row = Record<string, unknown>;
 type Lang = "nl" | "en" | "fr" | "de";
@@ -229,7 +229,7 @@ export async function exportMySubscribersCsv(userId: string, opts: { confirmedOn
      order by created_at asc
      limit 20000
   `) as Row[];
-  const plain = [];
+  const plain: SubscriberCsvRow[] = [];
   for (const r of rows) {
     if (String(r["owner_user_id"]) !== userId) continue;
     const space = r["space"] === "alias" ? "alias" : "root";
