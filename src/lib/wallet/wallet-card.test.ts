@@ -50,3 +50,18 @@ describe("ROUT Card wallet payload", () => {
     expect(sovereignIdFromDigest("ab12cd34ef")).toBe("ROUT-AB12-CD34");
   });
 });
+
+describe("Google Wallet save link signing", () => {
+  it("produces an RS256 JWT Google can verify, carrying the ROUT Card object", async () => {
+    const { generateKeyPair, exportPKCS8, jwtVerify } = await import("jose");
+    const { publicKey, privateKey } = await generateKeyPair("RS256", { extractable: true });
+    const { googleCardSave } = await import("./google-wallet.server");
+    const pem = await exportPKCS8(privateKey);
+    const { jwt, saveUrl } = await googleCardSave(root, base, { issuerId: "3388", serviceAccountEmail: "sa@x.iam.gserviceaccount.com", privateKey: pem });
+    expect(saveUrl).toBe(`https://pay.google.com/gp/v/save/${jwt}`);
+    const { payload, protectedHeader } = await jwtVerify(jwt, publicKey, { audience: "google", issuer: "sa@x.iam.gserviceaccount.com" });
+    expect(protectedHeader.alg).toBe("RS256");
+    const obj = (payload as { payload: { genericObjects: { barcode: { value: string } }[] } }).payload.genericObjects[0];
+    expect(obj?.barcode.value).toBe("https://rout.be/@jona");
+  });
+});
