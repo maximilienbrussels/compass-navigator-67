@@ -60,5 +60,10 @@ export async function setPlatformFeature(opts: { adminId: string; feature: Platf
   `;
   cache = null;
   const { writeAudit } = await import("./admin.server");
-  await writeAudit(opts.adminId, opts.enabled ? "feature.enable" : "feature.disable", null, { feature: opts.feature, note: opts.note }).catch(() => undefined);
+  await writeAudit({
+    adminId: opts.adminId,
+    action: opts.enabled ? "feature.enable" : "feature.disable",
+    targetLabel: opts.feature,
+    notes: opts.note,
+  }).catch(() => undefined);
 }
