@@ -28,6 +28,7 @@ export const getPublicFeedback = createServerFn({ method: "GET" })
 export const sendFeedbackResponse = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => feedbackResponseSchema.parse(d))
   .handler(async ({ data }) => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("feedback");
     const { hitRateLimit, clientIp } = await import("./rate-limit-db.server");
     const limit = await hitRateLimit("feedback-submit", clientIp(getRequest()), { limit: 5, windowSec: 600 });
     if (!limit.ok) return { ok: false, error: "rate_limited" };

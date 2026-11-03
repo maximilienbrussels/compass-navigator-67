@@ -36,6 +36,7 @@ export const getPublicSlots = createServerFn({ method: "GET" })
 export const createBooking = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => bookingRequest.parse(input))
   .handler(async ({ data }) => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("bookings");
     const { hitRateLimit } = await import("@/lib/rate-limit-db.server");
     const { getRequestHeader } = await import("@tanstack/react-start/server");
     const ip = getRequestHeader("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";

@@ -1244,6 +1244,14 @@ export interface PublicPhoneOtpCodesRow {
   "created_at": string | Date;
 }
 
+export interface PublicPlatformFeatureSwitchesRow {
+  "feature": string;
+  "enabled": boolean;
+  "note": string | null;
+  "updated_by": string | null;
+  "updated_at": string | Date;
+}
+
 export interface PublicPlatformIntegrationSwitchesRow {
   "provider": string;
   "mode": string;
@@ -2413,6 +2421,7 @@ export interface DbTables {
   "public.onboarding_drafts": PublicOnboardingDraftsRow;
   "public.parent_authorizations": PublicParentAuthorizationsRow;
   "public.phone_otp_codes": PublicPhoneOtpCodesRow;
+  "public.platform_feature_switches": PublicPlatformFeatureSwitchesRow;
   "public.platform_integration_switches": PublicPlatformIntegrationSwitchesRow;
   "public.poll_votes": PublicPollVotesRow;
   "public.presence_broadcast_jobs": PublicPresenceBroadcastJobsRow;

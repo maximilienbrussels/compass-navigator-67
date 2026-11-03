@@ -78,6 +78,7 @@ export const askAnonymousQuestion = createServerFn({ method: "POST" })
     }).parse(input),
   )
   .handler(async ({ data, context }) => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("questions");
     const { constantTime } = await import("./qa/privacy-keys");
     const result = await constantTime<AskResult>(() => sendQuestion(data, context.userId), "unavailable");
     return { result, masked: result === "ok" && data.ghost };

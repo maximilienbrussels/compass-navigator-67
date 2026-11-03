@@ -9,6 +9,7 @@ export const enqueueOmniUrl = createServerFn({ method: "POST" })
   .middleware([requireAuth])
   .inputValidator((input: unknown) => ingestPayloadSchema.parse(input))
   .handler(async ({ data, context }): Promise<{ ok: boolean; jobId?: string; error?: string }> => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("omni_ingest");
     const { enqueueOmniJob } = await import("@/lib/omni-ingest.server");
     try {
       return { ok: true, jobId: await enqueueOmniJob({ userId: context.userId, source: "studio", url: data.target_url, title: data.title, mediaUrl: data.media_url }) };

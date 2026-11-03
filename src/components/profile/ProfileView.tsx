@@ -215,7 +215,9 @@ export function ProfileView({
           ...(prefs.themeOverrides[scope]?.fontPairing ? { fontFamily: fontPairingOf(design.fontPairing).body } : {}),
         }
       : buttonStyle;
-    return glass ? { ...(own ?? {}), ...glass } : own;
+    // Button text colour lives under Typography, so it applies even without custom button shapes.
+    const withText = design.buttonTextColor ? { ...(own ?? {}), color: design.buttonTextColor } : own;
+    return glass ? { ...(withText ?? {}), ...glass } : withText;
   };
   const iconOnly = (prefs.buttonsCustom || prefs.customDesign) && prefs.buttonShape === "icon";
   /** Eigen canvas- en patroonkleuren overschrijven het thema, indien gekozen. */
@@ -565,6 +567,13 @@ export function ProfileView({
           </span>
         )}
 
+        {/* Fixed header order: photo, name, username, location, bio — then trust details. */}
+        {(shownBio || profile.tagline) && (
+          <p className="mt-3 max-w-sm text-balance text-center text-sm" style={{ color: t.muted }}>
+            {shownBio || profile.tagline}
+          </p>
+        )}
+
         <MemberSinceBadge
           createdAt={profile.created_at_iso ?? profile.created_at ?? null}
           stamp={profile.genesis_stamp ?? null}
@@ -580,11 +589,6 @@ export function ProfileView({
           >
             <Mail className="h-3.5 w-3.5" aria-hidden />  {tx("profile.contactVia")} {aliasEmail}
           </a>
-        )}
-        {(shownBio || profile.tagline) && (
-          <p className="mt-3 max-w-sm text-balance text-center text-sm" style={{ color: t.muted }}>
-            {shownBio || profile.tagline}
-          </p>
         )}
 
         {usesSectionFallback(profile.blocks, "widget:reach") && profile.show_total_reach && (profile.total_reach_count ?? 0) > 0 && (

@@ -115,7 +115,11 @@ type Checklist = Awaited<ReturnType<typeof getDeploymentChecklist>>;
 type InboundRow = Awaited<ReturnType<typeof listInboundPayments>>["rows"][number];
 type AuditRow = Awaited<ReturnType<typeof listAuditLogPage>>["rows"][number];
 
-export default function Admin() {
+export const ADMIN_CONSOLE_TABS = ["users", "verifications", "transactions", "inbound", "members", "vip", "network", "promos", "pricing", "delivery", "showcase", "deployment"] as const;
+export type AdminConsoleTab = (typeof ADMIN_CONSOLE_TABS)[number];
+
+/** Classic admin console; the portal deep-links each tab via `/admin/console?tab=…`. */
+export default function Admin({ tab, onTabChange }: { tab?: AdminConsoleTab; onTabChange?: (tab: AdminConsoleTab) => void } = {}) {
   const nav = useNavigate();
   const { user, loading } = useAuth();
 
@@ -262,7 +266,12 @@ export default function Admin() {
       .then((rows) => setKpiRows(rows))
       .catch(() => setKpiRows([]));
   };
-  const [activeTab, setActiveTab] = useState("users");
+  const [localTab, setLocalTab] = useState<string>(tab ?? "users");
+  const activeTab = tab ?? localTab;
+  const setActiveTab = (next: string) => {
+    setLocalTab(next);
+    if (onTabChange && (ADMIN_CONSOLE_TABS as readonly string[]).includes(next)) onTabChange(next as AdminConsoleTab);
+  };
   const { t } = useTranslation();
   const [viewAsUser, setViewAsUser] = useState<UserRow | null>(null);
 

@@ -22,6 +22,7 @@ export const postGuestbookNote = createServerFn({ method: "POST" })
   .middleware([requireAuth])
   .inputValidator((input: unknown) => z.object({ handle, body: z.string().max(GUESTBOOK_MAX * 4) }).parse(input))
   .handler(async ({ data, context }) => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("guestbook");
     const s = await import("./guestbook.server");
     return { result: await s.postNote(context.userId, data.handle, data.body) };
   });

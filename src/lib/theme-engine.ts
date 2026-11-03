@@ -37,8 +37,10 @@ export type ButtonTokens = {
   fontPairing: (typeof OVERRIDE_FONT_PAIRINGS)[number];
   buttonColor: string | null;
   buttonTextColor: string | null;
+  /** Optional button outline colour; null = the variant's own border. */
+  buttonBorderColor: string | null;
 };
-export const BUTTON_TOKEN_KEYS = ["buttonVariant", "buttonRadius", "fontPairing", "buttonColor", "buttonTextColor"] as const;
+export const BUTTON_TOKEN_KEYS = ["buttonVariant", "buttonRadius", "fontPairing", "buttonColor", "buttonTextColor", "buttonBorderColor"] as const;
 
 /** Shape presets: one click sets both button style and corner radius. */
 export const BUTTON_SHAPE_PRESETS: readonly {
@@ -94,6 +96,7 @@ function normalizePartial(raw: unknown): ScopeOverride {
   if (isIn(OVERRIDE_FONT_PAIRINGS, r["fontPairing"])) out.fontPairing = r["fontPairing"] as ButtonTokens["fontPairing"];
   if (typeof r["buttonColor"] === "string" && HEX.test(r["buttonColor"])) out.buttonColor = r["buttonColor"];
   if (typeof r["buttonTextColor"] === "string" && HEX.test(r["buttonTextColor"])) out.buttonTextColor = r["buttonTextColor"];
+  if (typeof r["buttonBorderColor"] === "string" && HEX.test(r["buttonBorderColor"])) out.buttonBorderColor = r["buttonBorderColor"];
   if (GLASS_STYLES.includes(r["glassStyle"] as GlassStyle)) out.glassStyle = r["glassStyle"] as GlassStyle;
   if (r["glassOpacity"] !== undefined) out.glassOpacity = clamp(r["glassOpacity"], 5, 50, DEFAULT_GLASS.glassOpacity);
   if (r["glassBlur"] !== undefined) out.glassBlur = clamp(r["glassBlur"], 4, 32, DEFAULT_GLASS.glassBlur);
@@ -170,7 +173,10 @@ export function applyScopedPatch(
   patch: ScopeOverride,
 ): { global: GlassTokens; overrides: ThemeOverrides } {
   if (scope === "all") return { global: { ...global, ...patch }, overrides };
-  return { global, overrides: { ...overrides, [scope]: { ...(overrides[scope] ?? {}), ...patch } } };
+  const merged: Record<string, unknown> = { ...(overrides[scope] ?? {}), ...patch };
+  // A cleared value (null) means "follow the default" and is not stored as an override.
+  for (const key of Object.keys(merged)) if (merged[key] === null) delete merged[key];
+  return { global, overrides: { ...overrides, [scope]: merged as ScopeOverride } };
 }
 
 export function resetScope(overrides: ThemeOverrides, scope: ComponentScope): ThemeOverrides {

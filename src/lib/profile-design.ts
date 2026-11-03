@@ -88,6 +88,8 @@ export interface ProfileDesignPrefs {
   buttonEffect: ButtonEffect;
   buttonColor: string | null;
   buttonTextColor: string | null;
+  /** Optional outline colour for buttons (Knopvorm → Knoprand); null = variant default. */
+  buttonBorderColor: string | null;
   fontPairing: FontPairing;
   /** Basis-lettergrootte in procenten (85–125). */
   fontScale: number;
@@ -269,6 +271,7 @@ export const DEFAULT_DESIGN_PREFS: ProfileDesignPrefs = {
   buttonEffect: "none",
   buttonColor: null,
   buttonTextColor: null,
+  buttonBorderColor: null,
   fontPairing: "modern",
   fontScale: 100,
   titleScale: 100,
@@ -769,6 +772,15 @@ export function designButtonStyle(
   theme: { bg: string; card: string; text: string; border: string; accent?: string },
 ): Record<string, string | number> | null {
   if (!(d.buttonsCustom || d.customDesign)) return null;
+  const style = variantButtonStyle(d, theme);
+  if (!d.buttonBorderColor) return style;
+  return { ...style, border: `${d.buttonVariant === "hard" ? 2 : 1}px solid ${d.buttonBorderColor}` };
+}
+
+function variantButtonStyle(
+  d: ProfileDesignPrefs,
+  theme: { bg: string; card: string; text: string; border: string; accent?: string },
+): Record<string, string | number> {
   const radius = (BUTTON_RADII.find((r) => r.id === d.buttonRadius) ?? BUTTON_RADII[2]!).px;
   const accent = d.buttonColor ?? theme.accent ?? theme.card;
   const text = d.buttonTextColor ?? theme.text;
@@ -902,6 +914,7 @@ export function normalizeDesignPrefs(r: Record<string, unknown>): ProfileDesignP
     ),
     buttonColor: hex(r["buttonColor"]),
     buttonTextColor: hex(r["buttonTextColor"]),
+    buttonBorderColor: hex(r["buttonBorderColor"]),
     fontPairing: pick(
       r["fontPairing"],
       FONT_PAIRINGS.map((f) => f.id),

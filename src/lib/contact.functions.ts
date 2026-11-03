@@ -55,6 +55,7 @@ export interface ContactSubmitResult {
 export const submitContactMessage = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => contactSchema.parse(data))
   .handler(async ({ data }): Promise<ContactSubmitResult> => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("contact_form");
     const [{ dbAdmin }, server] = await Promise.all([
       import("@/lib/db/admin.server"),
       import("@/lib/contact.server"),
