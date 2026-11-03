@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { applyVisibilityRules, liveStateFromPresence, nextScheduleBoundary } from "./profile";
+import {
+  applyVisibilityRules,
+  fromLocalDateTimeInput,
+  isValidScheduleWindow,
+  liveStateFromPresence,
+  nextScheduleBoundary,
+  toLocalDateTimeInput,
+} from "./profile";
+import { visitHashSalt } from "./visits.server";
 import { ogLocale } from "./social-meta";
 
 describe("schedule boundary", () => {
@@ -35,5 +43,29 @@ describe("og:locale", () => {
   it("uses real territories", () => {
     expect(ogLocale("en")).toBe("en_US");
     expect(ogLocale("nl")).toBe("nl_BE");
+  });
+});
+
+describe("schedule editor input", () => {
+  it("rejects unreadable dates instead of saving them", () => {
+    expect(fromLocalDateTimeInput("not-a-date")).toBeNull();
+    expect(fromLocalDateTimeInput("")).toBe("");
+  });
+  it("round-trips a local time without shifting it", () => {
+    const iso = fromLocalDateTimeInput("2026-11-03T15:30");
+    expect(toLocalDateTimeInput(iso)).toBe("2026-11-03T15:30");
+  });
+  it("refuses an end that is not after the start", () => {
+    expect(isValidScheduleWindow("2026-11-03T15:00:00Z", "2026-11-03T14:00:00Z")).toBe(false);
+    expect(isValidScheduleWindow("2026-11-03T15:00:00Z", "2026-11-03T15:00:00Z")).toBe(false);
+    expect(isValidScheduleWindow("2026-11-03T15:00:00Z", "2026-11-03T16:00:00Z")).toBe(true);
+  });
+});
+
+describe("visit hash salt", () => {
+  it("has no guessable fallback", () => {
+    expect(visitHashSalt({})).toBeNull();
+    expect(visitHashSalt({ CONTACT_HASH_SALT: "short" })).toBeNull();
+    expect(visitHashSalt({ CONTACT_HASH_SALT: "x".repeat(32) })).toBe("x".repeat(32));
   });
 });
