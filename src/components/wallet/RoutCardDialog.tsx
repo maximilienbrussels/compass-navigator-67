@@ -101,6 +101,10 @@ export function RoutCardDialog({ open, onOpenChange, handle }: { open: boolean; 
     return () => window.removeEventListener("deviceorientation", onTilt);
   }, [open, gyro]);
 
+  useEffect(() => {
+    if (webgl === false && images) setReady(true);
+  }, [webgl, images]);
+
   const enableGyro = async () => {
     const D = (window as unknown as { DeviceOrientationEvent?: { requestPermission?: () => Promise<string> } }).DeviceOrientationEvent;
     try {
@@ -198,7 +202,7 @@ export function RoutCardDialog({ open, onOpenChange, handle }: { open: boolean; 
               </Suspense>
             </GlBoundary>
           ) : (
-            <div className="flex h-full items-center p-4" ref={() => setReady(true)}>{flat}</div>
+            <div className="flex h-full items-center p-4">{flat}</div>
           )}
           {faces && (
             <div className="absolute inset-x-0 bottom-2 flex justify-center gap-1.5">
