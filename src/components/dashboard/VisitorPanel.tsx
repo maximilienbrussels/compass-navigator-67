@@ -276,7 +276,7 @@ function countryLabel(code: string): string {
   }
 }
 
-/** Compact horizontal bars for one breakdown (countries, referrers, devices). */
+/** Compact horizontal bars for one breakdown (countries, devices). */
 function BarList({ title, empty, rows }: { title: string; empty: string; rows: Array<{ key: string; label: string; value: number }> }) {
   const max = Math.max(1, ...rows.map((r) => r.value));
   return (
