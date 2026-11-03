@@ -955,6 +955,12 @@ export const BLOCK_KINDS: {
     placeholder: "Schrijf een korte tekst…",
   },
   {
+    kind: "countdown",
+    label: "Aftelklok",
+    category: "layout" as const,
+    placeholder: "2026-12-31T20:00",
+  },
+  {
     kind: "spacer",
     label: "Spacer / witruimte",
     category: "layout" as const,
@@ -985,6 +991,7 @@ export const BLOCK_TABS: {
       "social_grid",
       "text",
       "spacer",
+      "countdown",
       "youtube",
       "spotify",
       "soundcloud",
@@ -1361,6 +1368,7 @@ export function blockHref(block: ProfileBlock): string {
     case "vcard":
     case "map_embed":
     case "event_list":
+    case "countdown":
       return "";
 
     case "calendar":
@@ -1395,7 +1403,8 @@ export const isWidgetBlock = (kind: string) =>
   kind === "faq_accordion" ||
   kind === "vcard" ||
   kind === "map_embed" ||
-  kind === "event_list";
+  kind === "event_list" ||
+  kind === "countdown";
 
 export const newBlockId = () =>
   `b_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
