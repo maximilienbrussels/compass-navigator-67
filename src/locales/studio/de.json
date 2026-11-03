@@ -712,5 +712,6 @@
   "presence.expires": "läuft ab {{when}}",
   "presence.end": "Pulse beenden",
   "presence.ended": "Pulse beendet",
-  "presence.endFailed": "Beenden fehlgeschlagen"
+  "presence.endFailed": "Beenden fehlgeschlagen",
+  "studio.links.scheduleInvalid": "Das Enddatum muss nach dem Startdatum liegen."
 }

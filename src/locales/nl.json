@@ -1709,5 +1709,13 @@
   "dataExport.title": "Download mijn data",
   "dataExport.body": "Alles wat we van je bijhouden in één leesbaar JSON-bestand: profiel, links, geverifieerde socials, e-mailaliassen en domeinen.",
   "dataExport.vault": "Volledige kluis (ZIP)",
-  "dataExport.failed": "Export mislukt."
+  "dataExport.failed": "Export mislukt.",
+  "accountData.title": "Mijn gegevens",
+  "accountData.body": "Eén pagina met alles wat we bewaren: exporteren of definitief verwijderen.",
+  "accountData.open": "Open mijn gegevens",
+  "accountData.downloadTitle": "Accountgegevens downloaden",
+  "accountData.downloadBody": "Exporteer je QR-codes, dynamische links en profielgegevens.",
+  "accountData.downloadButton": "Exporteer JSON/ZIP",
+  "accountData.deleteHelp": "Lees wat er exact met je data gebeurt.",
+  "accountData.dangerZone": "Gevarenzone"
 }

@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n";
 import { SITE_ORIGIN } from "@/lib/site";
+import { ogLocale } from "@/lib/social-meta";
 
 /**
  * Unieke deel-kaart per publieke pagina: eigen afbeelding, kaderkleur
@@ -127,7 +128,7 @@ export function pageMeta(key: PageKey, locale: Locale = "en") {
     { property: "og:type", content: "website" },
     { property: "og:site_name", content: "ROUT" },
     { property: "og:url", content: url },
-    { property: "og:locale", content: `${locale}_${locale.toUpperCase()}` },
+    { property: "og:locale", content: ogLocale(locale) },
     { property: "og:image", content: image },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },

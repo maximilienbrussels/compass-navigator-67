@@ -22,8 +22,13 @@ export type RecordVisitInput = {
   country?: string | null;
 };
 
-async function dailyVisitorHash(ip: string, userAgent: string): Promise<string> {
-  const salt = process.env["CONTACT_HASH_SALT"] ?? "rout-visits";
+/** The hashing salt is a required secret: a guessable default would let anyone reverse visitor hashes. */
+export function visitHashSalt(env: Record<string, string | undefined> = process.env): string | null {
+  const salt = env["CONTACT_HASH_SALT"]?.trim() ?? "";
+  return salt.length >= 32 ? salt : null;
+}
+
+async function dailyVisitorHash(salt: string, ip: string, userAgent: string): Promise<string> {
   const day = new Date().toISOString().slice(0, 10);
   const data = new TextEncoder().encode(`${salt}:${day}:${ip}:${userAgent}`);
   const digest = await crypto.subtle.digest("SHA-256", data);
@@ -54,7 +59,12 @@ export async function recordVisit(input: RecordVisitInput): Promise<{ recorded: 
     return { recorded: false };
   }
 
-  const visitorHash = await dailyVisitorHash(input.ip ?? "", userAgent);
+  const salt = visitHashSalt();
+  if (!salt) {
+    console.warn("[visits] CONTACT_HASH_SALT missing or shorter than 32 characters; visit not recorded.");
+    return { recorded: false };
+  }
+  const visitorHash = await dailyVisitorHash(salt, input.ip ?? "", userAgent);
   const key = `${visitorHash}:${handle}:${input.space}`;
   const now = Date.now();
   const seen = recent.get(key);
@@ -251,7 +261,12 @@ export async function recordLinkClick(input: {
   if (/bot|crawler|spider|preview|curl|wget|monitor|lighthouse/i.test(userAgent)) {
     return { recorded: false };
   }
-  const visitorHash = await dailyVisitorHash(input.ip ?? "", userAgent);
+  const salt = visitHashSalt();
+  if (!salt) {
+    console.warn("[visits] CONTACT_HASH_SALT missing or shorter than 32 characters; click not recorded.");
+    return { recorded: false };
+  }
+  const visitorHash = await dailyVisitorHash(salt, input.ip ?? "", userAgent);
   const key = `${visitorHash}:${handle}:${blockId}`;
   const now = Date.now();
   const seen = recentClicks.get(key);

@@ -1709,5 +1709,13 @@
   "dataExport.title": "Meine Daten herunterladen",
   "dataExport.body": "Alles, was wir über dich speichern, in einer lesbaren JSON-Datei: Profil, Links, verifizierte Socials, E-Mail-Aliase und Domains.",
   "dataExport.vault": "Vollständiger Tresor (ZIP)",
-  "dataExport.failed": "Export fehlgeschlagen."
+  "dataExport.failed": "Export fehlgeschlagen.",
+  "accountData.title": "Meine Daten",
+  "accountData.body": "Eine Seite mit allem, was wir speichern: exportieren oder endgültig löschen.",
+  "accountData.open": "Meine Daten öffnen",
+  "accountData.downloadTitle": "Kontodaten herunterladen",
+  "accountData.downloadBody": "Exportiere deine QR-Codes, dynamischen Links und Profildaten.",
+  "accountData.downloadButton": "JSON/ZIP exportieren",
+  "accountData.deleteHelp": "Lies, was genau mit deinen Daten passiert.",
+  "accountData.dangerZone": "Gefahrenzone"
 }

@@ -178,7 +178,12 @@ export async function senderHashFromHeaders(headers: Headers): Promise<string | 
   const address = candidates.find((value) => value && value.length > 0);
   if (!address) return null;
 
-  const salt = process.env["CONTACT_HASH_SALT"] ?? "rout-contact-form";
+  const salt = process.env["CONTACT_HASH_SALT"]?.trim() ?? "";
+  // Required secret: a guessable default would make sender hashes reversible.
+  if (salt.length < 32) {
+    console.warn("[contact] CONTACT_HASH_SALT missing or shorter than 32 characters; sender hash disabled.");
+    return null;
+  }
   const bytes = new TextEncoder().encode(`${salt}:${address}`);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return Array.from(new Uint8Array(digest))

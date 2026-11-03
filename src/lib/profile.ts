@@ -99,6 +99,30 @@ export function nextScheduleBoundary(blocks: Pick<ProfileBlock, "startsAt" | "ex
   return next;
 }
 
+/** ISO moment → value for a `datetime-local` input, in the editor's own time zone. */
+export function toLocalDateTimeInput(iso: string | null | undefined): string {
+  const at = iso ? Date.parse(iso) : NaN;
+  if (!Number.isFinite(at)) return "";
+  const d = new Date(at);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/** `datetime-local` value → ISO string; "" clears, null means the value is not a real date. */
+export function fromLocalDateTimeInput(value: string): string | null {
+  if (!value) return "";
+  const at = new Date(value).getTime();
+  return Number.isFinite(at) ? new Date(at).toISOString() : null;
+}
+
+/** A schedule window is valid unless both ends are set and the end is not after the start. */
+export function isValidScheduleWindow(startsAt: string | null | undefined, expiresAt: string | null | undefined): boolean {
+  const start = startsAt ? Date.parse(startsAt) : NaN;
+  const end = expiresAt ? Date.parse(expiresAt) : NaN;
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return true;
+  return end > start;
+}
+
 /** Zet een ingetypt webadres om naar een volledige https-URL. */
 export function sanitizeUrl(raw: string): string {
   const value = raw.trim();

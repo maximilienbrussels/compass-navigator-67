@@ -1709,5 +1709,13 @@
   "dataExport.title": "Télécharger mes données",
   "dataExport.body": "Tout ce que nous conservons sur vous dans un fichier JSON lisible : profil, liens, réseaux vérifiés, alias e-mail et domaines.",
   "dataExport.vault": "Coffre complet (ZIP)",
-  "dataExport.failed": "Échec de l'export."
+  "dataExport.failed": "Échec de l'export.",
+  "accountData.title": "Mes données",
+  "accountData.body": "Une page avec tout ce que nous conservons : exportez-le ou supprimez-le définitivement.",
+  "accountData.open": "Ouvrir mes données",
+  "accountData.downloadTitle": "Télécharger les données du compte",
+  "accountData.downloadBody": "Exportez vos codes QR, liens dynamiques et données de profil.",
+  "accountData.downloadButton": "Exporter JSON/ZIP",
+  "accountData.deleteHelp": "Découvrez exactement ce qu'il advient de vos données.",
+  "accountData.dangerZone": "Zone de danger"
 }

@@ -33,6 +33,9 @@ import {
   sanitizeUrl,
   PROMO_BADGE_PRESETS,
   PROMO_COPY_PRESETS,
+  fromLocalDateTimeInput,
+  isValidScheduleWindow,
+  toLocalDateTimeInput,
   type ProfileBlock,
 } from "@/lib/profile";
 import { isProfileSectionKind } from "@/lib/profile-section-blocks";
@@ -78,6 +81,13 @@ export function ProfileLinksManager({
 
   const patch = (id: string, next: Partial<ProfileBlock>) =>
     onBlocksChange((b) => b.map((x) => (x.id === id ? { ...x, ...next } : x)));
+
+  /** Schedule inputs: unreadable dates are ignored instead of crashing or saving garbage. */
+  const setScheduleField = (block: ProfileBlock, field: "startsAt" | "expiresAt", value: string) => {
+    const iso = fromLocalDateTimeInput(value);
+    if (iso === null) return;
+    patch(block.id, { [field]: iso });
+  };
 
   /** Zet het blok bovenaan (of maakt het weer los). */
   const togglePin = (id: string) =>
@@ -407,14 +417,8 @@ export function ProfileLinksManager({
                         type="datetime-local"
                         className="input-field h-9 rounded-xl"
                         aria-label={t("studio.links.expires")}
-                        value={(b.expiresAt ?? "").slice(0, 16)}
-                        onChange={(e) =>
-                          patch(b.id, {
-                            expiresAt: e.target.value
-                              ? new Date(e.target.value).toISOString()
-                              : "",
-                          })
-                        }
+                        value={toLocalDateTimeInput(b.expiresAt)}
+                        onChange={(e) => setScheduleField(b, "expiresAt", e.target.value)}
                       />
                       <div className="flex flex-wrap gap-1.5">
                         {PROMO_COPY_PRESETS.map((preset) => (
@@ -438,14 +442,8 @@ export function ProfileLinksManager({
                         <Input
                           type="datetime-local"
                           className="input-field h-9 rounded-xl"
-                          value={(b.startsAt ?? "").slice(0, 16)}
-                          onChange={(e) =>
-                            patch(b.id, {
-                              startsAt: e.target.value
-                                ? new Date(e.target.value).toISOString()
-                                : "",
-                            })
-                          }
+                          value={toLocalDateTimeInput(b.startsAt)}
+                          onChange={(e) => setScheduleField(b, "startsAt", e.target.value)}
                         />
                       </label>
                       <label className="space-y-1 text-[10px] text-muted-foreground">
@@ -453,17 +451,14 @@ export function ProfileLinksManager({
                         <Input
                           type="datetime-local"
                           className="input-field h-9 rounded-xl"
-                          value={(b.expiresAt ?? "").slice(0, 16)}
-                          onChange={(e) =>
-                            patch(b.id, {
-                              expiresAt: e.target.value
-                                ? new Date(e.target.value).toISOString()
-                                : "",
-                            })
-                          }
+                          value={toLocalDateTimeInput(b.expiresAt)}
+                          onChange={(e) => setScheduleField(b, "expiresAt", e.target.value)}
                         />
                       </label>
                     </div>
+                    {!isValidScheduleWindow(b.startsAt, b.expiresAt) && (
+                      <p role="alert" className="text-[11px] text-destructive">{t("studio.links.scheduleInvalid")}</p>
+                    )}
                     <div className="flex flex-wrap items-center gap-2">
                       {b.thumbnailUrl && (
                         <img
