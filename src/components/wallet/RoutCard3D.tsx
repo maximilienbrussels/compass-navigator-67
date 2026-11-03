@@ -137,7 +137,7 @@ function ReadySignal({ onReady }: { onReady: () => void }) {
 
 export default function RoutCard3D(props: { faces: CardFaces; finish: CardFinish; flipped: boolean; tilt: TiltRef; onFlip: () => void; onReady: () => void }) {
   return (
-    <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 4.4], fov: 30 }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
+    <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 3.7], fov: 30 }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}>
       <ambientLight intensity={0.55} />
       <directionalLight position={[2, 3, 4]} intensity={1.1} />
       <Environment resolution={128}>
