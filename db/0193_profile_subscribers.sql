@@ -47,6 +47,7 @@ create or replace function public.rout_subscriber_join(
   p_confirm_hash text, p_unsubscribe_hash text, p_locale text
 ) returns table (outcome text, out_owner uuid, out_space text, out_list integer)
 language plpgsql volatile security definer set search_path = pg_catalog, public as $$
+#variable_conflict use_column
 declare
   v_owner uuid;
   v_space text;
@@ -55,7 +56,6 @@ declare
   v_list integer;
   v_status text;
 begin
-  #variable_conflict use_column
   select p.id, 'root', p.blocks into v_owner, v_space, v_blocks
     from public.profiles p
    where lower(p.username) = lower(p_handle) and coalesce(p.status, 'active') = 'active'
