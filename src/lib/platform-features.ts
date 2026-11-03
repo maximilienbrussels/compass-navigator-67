@@ -14,6 +14,7 @@ export const PLATFORM_FEATURES = [
   { id: "feedback", group: "Profielblokken", label: "Feedback & reviews", description: "Antwoorden op feedbackformulieren." },
   { id: "tips", group: "Betalingen", label: "Fooien / tip-pagina's", description: "Betalingen starten op tip-pagina's van makers." },
   { id: "workspaces", group: "Accounts", label: "Nieuwe werkruimtes", description: "Leden kunnen nieuwe werkruimtes (bedrijven, teams) aanmaken." },
+  { id: "wallet", group: "Delen", label: "Wallet-passen (Google/Apple)", description: "ROUT Cards en event-passen uitgeven aan Google Wallet en Apple Wallet." },
   { id: "omni_ingest", group: "Studio", label: "Omni-import (URL naar kaart)", description: "Links laten omzetten naar rasterkaarten." },
 ] as const;
 

@@ -50,7 +50,7 @@ function defaultFinish(fg: string): CardFinish {
  * "ROUT Card": a 3D digital twin of the member's card, plus Google Wallet,
  * Apple Wallet and vCard exports — all from the same server-built payload.
  */
-export function RoutCardDialog({ open, onOpenChange, handle }: { open: boolean; onOpenChange: (v: boolean) => void; handle: string }) {
+export function RoutCardDialog({ open, onOpenChange, handle, space }: { open: boolean; onOpenChange: (v: boolean) => void; handle: string; space?: "root" | "alias" }) {
   const { t } = useTranslation();
   const loadCard = useServerFn(getWalletCard);
   const loadStatus = useServerFn(getWalletStatus);
@@ -70,9 +70,9 @@ export function RoutCardDialog({ open, onOpenChange, handle }: { open: boolean; 
   useEffect(() => {
     if (!open || card !== undefined) return;
     setWebgl(hasWebGL());
-    loadCard({ data: { handle } }).then(setCard).catch(() => setCard(null));
+    loadCard({ data: { handle, space } }).then(setCard).catch(() => setCard(null));
     loadStatus().then(setStatus).catch(() => setStatus({ apple: false, google: false }));
-  }, [open, card, handle, loadCard, loadStatus]);
+  }, [open, card, handle, space, loadCard, loadStatus]);
 
   useEffect(() => {
     if (!card) return;
@@ -133,7 +133,7 @@ export function RoutCardDialog({ open, onOpenChange, handle }: { open: boolean; 
     // Open synchronously so the save page is not blocked as a popup.
     const tab = window.open("", "_blank");
     try {
-      const res = await fetch(`/api/wallet/google?username=${encodeURIComponent(handle)}`);
+      const res = await fetch(`/api/wallet/google?username=${encodeURIComponent(handle)}${space ? `&space=${space}` : ""}`);
       const body = (await res.json()) as { saveUrl?: string; error?: string };
       if (!res.ok || !body.saveUrl) throw new Error(body.error ?? String(res.status));
       if (tab) tab.location.href = body.saveUrl;
@@ -149,7 +149,7 @@ export function RoutCardDialog({ open, onOpenChange, handle }: { open: boolean; 
   const addApple = async () => {
     setBusy("apple");
     try {
-      const res = await fetch(`/api/wallet/profile/${encodeURIComponent(handle)}?type=apple`);
+      const res = await fetch(`/api/wallet/profile/${encodeURIComponent(handle)}?type=apple${space ? `&space=${space}` : ""}`);
       if (!res.ok) throw new Error(String(res.status));
       const url = URL.createObjectURL(await res.blob());
       const a = document.createElement("a");

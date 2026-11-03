@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 /**
- * GET /api/wallet/google?username=<handle> | ?user_id=<uuid>
+ * GET /api/wallet/google?username=<handle> | ?user_id=<uuid>  [&space=root|alias]
  * Returns { jwt, saveUrl } for "Add to Google Wallet". Public profile data only;
  * signing runs server-side (async WebCrypto), never on the visitor's main thread.
  * Without a configured issuer: 503 wallet_not_configured with an unsigned demo payload.
@@ -17,13 +17,16 @@ export const Route = createFileRoute("/api_/wallet/google")({
         if (!target || (userId && !/^[0-9a-f-]{36}$/i.test(userId)) || (!userId && !/^[\w.-]{1,100}$/.test(username))) {
           return Response.json({ error: "invalid_request" }, { status: 400 });
         }
+        const { isPlatformFeatureEnabled } = await import("@/lib/platform-features.server");
+        if (!(await isPlatformFeatureEnabled("wallet"))) return Response.json({ error: "feature_disabled" }, { status: 403, headers: { "cache-control": "no-store" } });
+        const space = url.searchParams.get("space") === "alias" ? "alias" : url.searchParams.get("space") === "root" ? "root" : undefined;
         const { guardShared } = await import("@/lib/rate-limit-db.server");
         const limited = await guardShared(request, "wallet-google", { limit: 30, windowSec: 60 });
         if (limited) return limited;
         const headers = { "cache-control": "no-store" };
         try {
           const { generateWalletPayload, walletOrigin } = await import("@/lib/wallet/wallet-payload.server");
-          const card = await generateWalletPayload(target);
+          const card = await generateWalletPayload(target, { space });
           if (!card) return Response.json({ error: "not_found" }, { status: 404, headers });
           const { googleWalletConfig, googleCardSaveClaims } = await import("@/lib/wallet/wallet-pass");
           const cfg = googleWalletConfig(process.env as Record<string, string | undefined>);
