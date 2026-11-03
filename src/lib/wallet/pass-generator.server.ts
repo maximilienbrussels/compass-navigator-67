@@ -7,6 +7,8 @@ import { canonicalAppUrl } from "@/lib/app-url";
 import {
   appleWalletConfig,
   applePassJson,
+  appleCardPassJson,
+  googleCardSaveClaims,
   googleSaveClaims,
   googleWalletConfig,
   type WalletKind,
@@ -70,6 +72,8 @@ async function eventHasVerifiedAccess(eventSlug: string): Promise<boolean> {
 }
 
 export async function generatePass(kind: WalletKind, id: string, wallet: "apple" | "google", origin: string): Promise<PassResult> {
+  // Profiles are ROUT Cards: one shared payload for Google, Apple and the 3D card.
+  if (kind === "profile") return generateCardPass(id, wallet);
   const subject = await loadWalletSubject(kind, id, origin);
   const assetOrigin = walletOrigin();
   if (!subject) return { kind: "not_found" };
@@ -89,4 +93,30 @@ export async function generatePass(kind: WalletKind, id: string, wallet: "apple"
   const { buildPkpass } = await import("./apple-wallet.server");
   const bytes = await buildPkpass(subject, { "icon.png": icon, "icon@2x.png": icon2x, "logo.png": logo }, cfg);
   return { kind: "pkpass", bytes, filename: `rout-${subject.kind}.pkpass` };
+}
+
+async function walletImages(assetOrigin: string) {
+  const img = async (path: string) => new Uint8Array(await (await fetch(`${assetOrigin}${path}`)).arrayBuffer());
+  const [icon, icon2x, logo] = await Promise.all([img("/favicon.png"), img("/icon-192.png"), img("/apple-touch-icon.png")]);
+  return { "icon.png": icon, "icon@2x.png": icon2x, "logo.png": logo };
+}
+
+/** ROUT Card for a profile (handle or user id). */
+export async function generateCardPass(userIdOrHandle: string, wallet: "apple" | "google"): Promise<PassResult> {
+  const { generateWalletPayload, walletOrigin: origin } = await import("./wallet-payload.server");
+  const card = await generateWalletPayload(userIdOrHandle);
+  if (!card) return { kind: "not_found" };
+  const base = origin();
+  const env = process.env as Record<string, string | undefined>;
+  if (wallet === "google") {
+    const cfg = googleWalletConfig(env);
+    if (!cfg) return { kind: "demo", wallet, payload: googleCardSaveClaims(card, { issuerId: "DEMO", serviceAccountEmail: "demo@example.invalid", origins: [base] }) };
+    const { googleCardSave } = await import("./google-wallet.server");
+    return { kind: "redirect", url: (await googleCardSave(card, base, cfg)).saveUrl };
+  }
+  const cfg = appleWalletConfig(env);
+  if (!cfg) return { kind: "demo", wallet, payload: appleCardPassJson(card, { passTypeId: "pass.demo.rout", teamId: "DEMO" }) };
+  const { signPkpass } = await import("./apple-wallet.server");
+  const bytes = await signPkpass(appleCardPassJson(card, { passTypeId: cfg.passTypeId, teamId: cfg.teamId }), await walletImages(base), cfg);
+  return { kind: "pkpass", bytes, filename: `rout-${card.handle}.pkpass` };
 }

@@ -19,7 +19,11 @@ function toBinaryString(bytes: Uint8Array): string {
 
 /** Builds the signed .pkpass. `images` must contain at least icon.png. */
 export async function buildPkpass(subject: WalletSubject, images: Record<string, Uint8Array>, cfg: AppleWalletConfig): Promise<Uint8Array> {
-  const passJson = applePassJson(subject, { passTypeId: cfg.passTypeId, teamId: cfg.teamId });
+  return signPkpass(applePassJson(subject, { passTypeId: cfg.passTypeId, teamId: cfg.teamId }), images, cfg);
+}
+
+/** Signs any pass.json (ROUT Card or event) into a .pkpass archive. */
+export async function signPkpass(passJson: unknown, images: Record<string, Uint8Array>, cfg: AppleWalletConfig): Promise<Uint8Array> {
   const files: Record<string, Uint8Array> = { "pass.json": new TextEncoder().encode(JSON.stringify(passJson)), ...images };
   const manifest: Record<string, string> = {};
   for (const [name, bytes] of Object.entries(files)) manifest[name] = await sha1Hex(bytes);
