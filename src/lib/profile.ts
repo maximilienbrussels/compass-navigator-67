@@ -35,6 +35,39 @@ export interface ProfileBlock {
   /** Omni presentation metadata stays on this same revisioned block. */
   contentType?: "link" | "article" | "podcast" | "media";
   kineticTheme?: "aurora" | "glass";
+  /** Optional bento tile size; absent = the classic full-width row. */
+  size?: BlockSize;
+}
+
+export type BlockSize = "small" | "wide" | "large";
+export const BLOCK_SIZES: readonly BlockSize[] = ["small", "wide", "large"];
+
+/** Archived = switched off or past its end date; still kept, just not shown. */
+export function isArchivedBlock(block: Pick<ProfileBlock, "hidden" | "expiresAt">, now: number = Date.now()): boolean {
+  if (block.hidden) return true;
+  if (!block.expiresAt) return false;
+  const end = Date.parse(block.expiresAt);
+  return Number.isFinite(end) && end <= now;
+}
+
+/** Restoring an archived block: visible again and an elapsed end date is cleared. */
+export function restoreArchivedBlock<T extends Pick<ProfileBlock, "hidden" | "expiresAt">>(block: T, now: number = Date.now()): T {
+  const end = block.expiresAt ? Date.parse(block.expiresAt) : NaN;
+  const { expiresAt: _expired, ...rest } = block;
+  return (Number.isFinite(end) && end <= now ? { ...rest, hidden: false } : { ...block, hidden: false }) as T;
+}
+
+/** Countdown block value: an ISO target moment. Returns null when unreadable. */
+export function countdownTarget(value: string): number | null {
+  const t = Date.parse(value.trim());
+  return Number.isFinite(t) ? t : null;
+}
+
+/** Remaining time split for display; all zero once the moment passed. */
+export function countdownParts(target: number, now: number = Date.now()) {
+  const ms = Math.max(0, target - now);
+  const s = Math.floor(ms / 1000);
+  return { done: ms === 0, days: Math.floor(s / 86_400), hours: Math.floor((s % 86_400) / 3600), minutes: Math.floor((s % 3600) / 60), seconds: s % 60 };
 }
 
 export type BlockVisibilityRule = "always_visible" | "hide_when_focus_mode" | "show_only_when_live";
