@@ -1746,5 +1746,17 @@
   "visits.noneYet": "No visits recorded yet. Share your profile link or QR to see your first visitors.",
   "visits.prev": "Previous",
   "visits.next": "Next",
-  "visits.page": "Page {{page}} of {{pages}}"
+  "visits.page": "Page {{page}} of {{pages}}",
+  "card.title": "ROUT Card",
+  "card.description": "Your business card in 3D. Tap to flip; your QR code is on the back.",
+  "card.notFound": "This profile isn't public, so there is no card.",
+  "card.flip": "Flip",
+  "card.gyro": "Tilt with your phone",
+  "card.gyroDenied": "Motion sensor unavailable.",
+  "card.vcf": "Save as contact (.vcf)",
+  "card.finish.metal": "Metal",
+  "card.finish.glass": "Glass",
+  "card.finish.holo": "Holo",
+  "card.open": "Open card",
+  "card.studioHelp": "3D business card, Google Wallet, Apple Wallet and contact file."
 }

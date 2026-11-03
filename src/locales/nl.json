@@ -1746,5 +1746,17 @@
   "visits.noneYet": "Nog geen bezoeken geregistreerd. Deel je profiel-link of QR om je eerste bezoekers te zien.",
   "visits.prev": "Vorige",
   "visits.next": "Volgende",
-  "visits.page": "Pagina {{page}} van {{pages}}"
+  "visits.page": "Pagina {{page}} van {{pages}}",
+  "card.title": "ROUT Card",
+  "card.description": "Je visitekaartje in 3D. Tik om om te draaien; op de achterkant staat je QR-code.",
+  "card.notFound": "Dit profiel is niet openbaar, dus er is geen kaart.",
+  "card.flip": "Omdraaien",
+  "card.gyro": "Beweeg met je telefoon",
+  "card.gyroDenied": "Bewegingssensor niet beschikbaar.",
+  "card.vcf": "Bewaar als contact (.vcf)",
+  "card.finish.metal": "Metaal",
+  "card.finish.glass": "Glas",
+  "card.finish.holo": "Holo",
+  "card.open": "Open kaart",
+  "card.studioHelp": "3D-visitekaartje, Google Wallet, Apple Wallet en contactbestand."
 }

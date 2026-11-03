@@ -109,6 +109,7 @@ import {
 } from "@/lib/profile";
 import { ConversionCoachFab } from "@/components/studio/ConversionCoachFab";
 import { ShareInspector } from "@/components/studio/ShareInspector";
+import { RoutCardLauncher } from "@/components/wallet/RoutCardLauncher";
 import {
   Accordion,
   AccordionContent,
@@ -1333,6 +1334,7 @@ export function ProfileEditor({ variant = "verified", pageMode = "profile", onPa
                       bio={tagline}
                       handle={isWorkspace ? (wsCanvas?.slug ?? workspaceSlug ?? "") : normalized || handle}
                     />
+                    {!isWorkspace && <RoutCardLauncher handle={normalized || handle} />}
                   </section>
                 </AccordionContent>
               </AccordionItem>
