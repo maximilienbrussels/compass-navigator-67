@@ -32,7 +32,7 @@ import {
   type Decoration,
   type SectionId,
 } from "@/lib/design-layers";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { BadgeCheck, Mail, UserPlus, Users } from "lucide-react";
 import {
   blockHref,
@@ -185,7 +185,7 @@ export function ProfileView({
   );
   /** Bento mode only when the member gave at least one block a tile size. */
   const bento = blocks.some((b) => b.size);
-  const bentoCell = (b: ProfileBlock, node: React.ReactNode) => {
+  const bentoCell = (b: ProfileBlock, node: ReactNode) => {
     if (!bento || node === null) return node;
     const span = b.size === "small" ? "col-span-1" : b.size === "large" ? "col-span-2 [&>*]:min-h-40 [&>*]:h-full" : "col-span-2";
     return <div key={b.id} className={cn("flex min-w-0 [&>*]:w-full", span)} data-tile={b.size ?? "row"}>{node}</div>;
