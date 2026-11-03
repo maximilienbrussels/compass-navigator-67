@@ -71,9 +71,9 @@ async function eventHasVerifiedAccess(eventSlug: string): Promise<boolean> {
   }
 }
 
-export async function generatePass(kind: WalletKind, id: string, wallet: "apple" | "google", origin: string): Promise<PassResult> {
+export async function generatePass(kind: WalletKind, id: string, wallet: "apple" | "google", origin: string, space?: "root" | "alias"): Promise<PassResult> {
   // Profiles are ROUT Cards: one shared payload for Google, Apple and the 3D card.
-  if (kind === "profile") return generateCardPass(id, wallet);
+  if (kind === "profile") return generateCardPass(id, wallet, space);
   const subject = await loadWalletSubject(kind, id, origin);
   const assetOrigin = walletOrigin();
   if (!subject) return { kind: "not_found" };
@@ -102,9 +102,9 @@ async function walletImages(assetOrigin: string) {
 }
 
 /** ROUT Card for a profile (handle or user id). */
-export async function generateCardPass(userIdOrHandle: string, wallet: "apple" | "google"): Promise<PassResult> {
+export async function generateCardPass(userIdOrHandle: string, wallet: "apple" | "google", space?: "root" | "alias"): Promise<PassResult> {
   const { generateWalletPayload, walletOrigin: origin } = await import("./wallet-payload.server");
-  const card = await generateWalletPayload(userIdOrHandle);
+  const card = await generateWalletPayload(userIdOrHandle, { space });
   if (!card) return { kind: "not_found" };
   const base = origin();
   const env = process.env as Record<string, string | undefined>;
@@ -118,5 +118,5 @@ export async function generateCardPass(userIdOrHandle: string, wallet: "apple" |
   if (!cfg) return { kind: "demo", wallet, payload: appleCardPassJson(card, { passTypeId: "pass.demo.rout", teamId: "DEMO" }) };
   const { signPkpass } = await import("./apple-wallet.server");
   const bytes = await signPkpass(appleCardPassJson(card, { passTypeId: cfg.passTypeId, teamId: cfg.teamId }), await walletImages(base), cfg);
-  return { kind: "pkpass", bytes, filename: `rout-${card.handle}.pkpass` };
+  return { kind: "pkpass", bytes, filename: `rout-${card.space === "alias" ? "u-" : ""}${card.handle}.pkpass` };
 }

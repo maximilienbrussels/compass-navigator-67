@@ -136,7 +136,7 @@ export function ShareMenu({ url, handle, name, bio, avatarUrl, showNfc, qrStyle,
         </DropdownMenuContent>
       </DropdownMenu>
       {showNfc && <NfcDialog open={nfcOpen} onOpenChange={setNfcOpen} />}
-      {handle && <RoutCardDialog open={walletOpen} onOpenChange={setWalletOpen} handle={handle} />}
+      {handle && <RoutCardDialog open={walletOpen} onOpenChange={setWalletOpen} handle={handle} space={/\/u\//.test(url) ? "alias" : "root"} />}
       <Dialog open={qrOpen} onOpenChange={setQrOpen}>
         <DialogContent className="flex max-h-[100dvh] w-[100vw] max-w-[100vw] flex-col items-center justify-center gap-4 border-0 sm:max-w-[min(90vw,90vh)] sm:rounded-2xl">
           <DialogHeader className="sr-only">

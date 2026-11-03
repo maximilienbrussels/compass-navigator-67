@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 /**
- * GET /api/wallet/<profile|event>/<handle|slug>?type=apple|google
+ * GET /api/wallet/<profile|event>/<handle|slug>?type=apple|google[&space=root|alias]
  * Apple: signed .pkpass. Google: redirect to "Save to Google Wallet".
  * Without certificates: 503 wallet_not_configured with an unsigned demo payload.
  */
@@ -15,12 +15,15 @@ export const Route = createFileRoute("/api_/wallet/$kind/$id")({
         if (!isWalletKind(params.kind) || (type !== "apple" && type !== "google") || !/^[\w.-]{1,100}$/.test(params.id)) {
           return Response.json({ error: "invalid_request" }, { status: 400 });
         }
+        const { isPlatformFeatureEnabled } = await import("@/lib/platform-features.server");
+        if (!(await isPlatformFeatureEnabled("wallet"))) return Response.json({ error: "feature_disabled" }, { status: 403, headers: { "cache-control": "no-store" } });
         const { guardShared } = await import("@/lib/rate-limit-db.server");
         const limited = await guardShared(request, "wallet-pass", { limit: 30, windowSec: 60 });
         if (limited) return limited;
         try {
           const { generatePass } = await import("@/lib/wallet/pass-generator.server");
-          const r = await generatePass(params.kind, params.id, type, url.origin);
+          const space = url.searchParams.get("space") === "alias" ? "alias" : url.searchParams.get("space") === "root" ? "root" : undefined;
+          const r = await generatePass(params.kind, params.id, type, url.origin, space);
           if (r.kind === "not_found") return Response.json({ error: "not_found" }, { status: 404 });
           if (r.kind === "demo") {
             return Response.json(
