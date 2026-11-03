@@ -25,3 +25,6 @@
 - Signup-block addresses live only AES-GCM encrypted in `profile_subscribers` (db/0193, `subscribers/subscriber-crypto.server.ts`, `SUBSCRIBER_ENCRYPTION_KEY`, owner/space bound AAD) with a keyed hash for dedupe; runtime reads are owner-only RLS, public writes go through `rout_subscriber_*` definer functions, and only the Studio CSV export decrypts. Why: no address is scrapeable or visible to admins.
 - Profile import (`profile-import.ts`) only changes Studio editor state, which autosaves to the private draft through the normal patch validation. Why: imports never publish or bypass block validation.
 - Visit stats never store referrers (enforced by `src/test/smoke/privacy.test.ts`). Why: public privacy promise.
+- Platform-wide feature switches live in `platform_feature_switches` (db/0195) with the catalog in `platform-features.ts`; missing rows mean ON and storage failures fail open, and each public entry point calls `assertPlatformFeature`. Why: admins can pause a feature centrally without a broken DB switching the platform off.
+- `ADMIN_NAV_GROUPS` in `components/admin/AdminPortalNav.tsx` is the single admin map; `admin-portal-nav.test.ts` fails when an admin route or classic console tab is not linked. Why: no admin capability may become unreachable again.
+
