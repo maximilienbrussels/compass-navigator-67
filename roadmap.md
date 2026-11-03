@@ -43,6 +43,9 @@
 - [x] Fase 1: visibility rules, exact-time scheduling + editor date validation, og:locale on all share cards, shared visit dedupe with required hash salt, account data/export i18n, 0167 confirmed applied
 - [ ] Fase 1 follow-up: load translation bundles per page instead of all at once (deferred: needs SSR-safe async loading)
 - [ ] Link a Neon connection that logs in as the restricted rout_app role (current connection is the owner role, which the app refuses)
-- [ ] Fase 2: restore from own export + LinkStack import, vCard block
-- [ ] Fase 3: email signup block (owner-only RLS per profile, encrypted at rest, CSV only via Studio) + richer stats (referrer domain, country, filters, top links)
-- [ ] Fase 4: archive view, non-navigating preview, countdown block, optional bento tile sizes
+- [x] Fase 2: restore from own export + LinkStack import (draft only, undo); vCard block already existed
+- [x] Fase 3: signup block encrypted + owner-only RLS (0193), double opt-in, Studio CSV, admin counts only; stats now show countries + devices
+- [x] Fase 3 note: referrer storage dropped again (0194): project privacy policy and "Mijn data" promise say ROUT stores no referrers
+- [x] Fase 4: archive view, non-navigating preview, countdown block, optional bento tile sizes
+- [ ] Signup confirmation mails need the SMTP mailbox passwords (SMTP_PASS_SYSTEM); until then signups stay "pending"
+- [ ] Pre-existing failing tests: OmniIngestPanel (expects Dutch labels, page bundle not loaded in test) and ProfileHubPicker (mock lacks createMiddleware)

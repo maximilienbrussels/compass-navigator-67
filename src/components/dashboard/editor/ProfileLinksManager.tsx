@@ -4,6 +4,8 @@ import { type Dispatch, type SetStateAction, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowUp,
+  Archive,
+  RotateCcw,
   Award,
   MessageSquare,
   Users,
@@ -36,6 +38,9 @@ import {
   fromLocalDateTimeInput,
   isValidScheduleWindow,
   toLocalDateTimeInput,
+  BLOCK_SIZES,
+  isArchivedBlock,
+  restoreArchivedBlock,
   type ProfileBlock,
 } from "@/lib/profile";
 import { isProfileSectionKind } from "@/lib/profile-section-blocks";
@@ -54,6 +59,7 @@ import {
   PollBlockSettings,
 } from "@/components/dashboard/InteractionBlockSettings";
 import { VCardBlockSettings } from "@/components/dashboard/VCardBlockSettings";
+import { NewsletterBlockSettings } from "@/components/dashboard/NewsletterBlockSettings";
 
 interface ProfileLinksManagerProps {
   blocks: ProfileBlock[];
@@ -78,6 +84,11 @@ export function ProfileLinksManager({
   const dragId = useRef<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<string | null>(null);
+  /** Active list or the archive (switched off / past end date). */
+  const [view, setView] = useState<"active" | "archive">("active");
+  const now = Date.now();
+  const archivedCount = blocks.filter((b) => isArchivedBlock(b, now)).length;
+  const shown = blocks.filter((b) => isArchivedBlock(b, now) === (view === "archive"));
 
   const patch = (id: string, next: Partial<ProfileBlock>) =>
     onBlocksChange((b) => b.map((x) => (x.id === id ? { ...x, ...next } : x)));
@@ -172,14 +183,34 @@ export function ProfileLinksManager({
       </div>
 
 
-      {blocks.length === 0 && (
+      <div role="tablist" aria-label={t("studio.links.viewLabel")} className="inline-flex rounded-full border border-border bg-muted/40 p-0.5 text-[11px]">
+        {(["active", "archive"] as const).map((id) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={view === id}
+            onClick={() => setView(id)}
+            className={cn(
+              "inline-flex h-7 items-center gap-1.5 rounded-full px-3 font-medium transition-colors",
+              view === id ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {id === "archive" && <Archive className="h-3.5 w-3.5" aria-hidden />}
+            {id === "active" ? t("studio.links.viewActive", { count: blocks.length - archivedCount }) : t("studio.links.viewArchive", { count: archivedCount })}
+          </button>
+        ))}
+      </div>
+
+      {shown.length === 0 && (
         <p className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-muted-foreground">
-          {t("studio.links.empty")}
+          {view === "archive" ? t("studio.links.archiveEmpty") : t("studio.links.empty")}
         </p>
       )}
 
       <ul className="space-y-2">
         {blocks.map((b, index) => {
+          if (isArchivedBlock(b, now) !== (view === "archive")) return null;
           const hint = inputHint(b.kind);
           const open = openBlock === b.id;
           const section = isProfileSectionKind(b.kind);
@@ -250,6 +281,15 @@ export function ProfileLinksManager({
                 >
                   <Pin className="h-4 w-4" />
                 </button>
+                {view === "archive" && (
+                  <button
+                    type="button"
+                    onClick={() => onBlocksChange((list) => list.map((x) => (x.id === b.id ? restoreArchivedBlock(x) : x)))}
+                    className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-border px-2 py-1 text-[11px] font-medium hover:bg-muted"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" aria-hidden /> {t("studio.links.restore")}
+                  </button>
+                )}
                 <BlockRulesPopover block={b} onChange={(next) => patch(b.id, next)} />
                 <Switch
                   checked={!b.hidden}
@@ -354,6 +394,26 @@ export function ProfileLinksManager({
                       onChange={(value) => patch(b.id, { value })}
                       onTitle={(label) => patch(b.id, { label })}
                     />
+                  ) : b.kind === "newsletter" ? (
+                    <>
+                      <Input aria-label={t("studio.links.label")} value={b.label} maxLength={100} onChange={(e) => patch(b.id, { label: e.target.value })} />
+                      <NewsletterBlockSettings value={b.value} onChange={(value) => patch(b.id, { value })} />
+                    </>
+                  ) : b.kind === "countdown" ? (
+                    <>
+                      <Input aria-label={t("studio.links.label")} value={b.label} maxLength={100} onChange={(e) => patch(b.id, { label: e.target.value })} />
+                      <Input
+                        type="datetime-local"
+                        className="input-field h-11 rounded-xl"
+                        aria-label={t("studio.countdown.target")}
+                        value={toLocalDateTimeInput(b.value)}
+                        onChange={(e) => {
+                          const iso = fromLocalDateTimeInput(e.target.value);
+                          if (iso) patch(b.id, { value: iso });
+                        }}
+                      />
+                      <p className="text-[11px] text-muted-foreground">{t("studio.countdown.help")}</p>
+                    </>
                   ) : isHandleBlock(b.kind) && b.kind !== "matrix" ? (
                     <>
                       <SocialHandleInput
@@ -508,6 +568,30 @@ export function ProfileLinksManager({
                         </button>
                       )}
                     </div>
+                  </div>
+                  <div className="space-y-1.5 rounded-xl border border-border/60 bg-background p-3">
+                    <p className="text-[11px] font-medium text-foreground">{t("studio.links.tileSize")}</p>
+                    <div role="radiogroup" aria-label={t("studio.links.tileSize")} className="flex flex-wrap gap-1.5">
+                      {([undefined, ...BLOCK_SIZES] as const).map((size) => {
+                        const active = (b.size ?? undefined) === size;
+                        return (
+                          <button
+                            key={size ?? "row"}
+                            type="button"
+                            role="radio"
+                            aria-checked={active}
+                            onClick={() => patch(b.id, { size })}
+                            className={cn(
+                              "rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors",
+                              active ? "border-foreground bg-foreground text-background" : "border-border text-muted-foreground hover:bg-muted",
+                            )}
+                          >
+                            {t(`studio.links.tile.${size ?? "row"}`)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">{t("studio.links.tileHelp")}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     <button

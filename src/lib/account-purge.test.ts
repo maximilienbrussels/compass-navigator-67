@@ -16,7 +16,7 @@ async function fixture() {
     create table public.profiles (id uuid references users(id) on delete cascade, username text);
     create table public.alias_profiles (user_id uuid references users(id) on delete cascade, handle text);
     create table public.account_deletions (user_id uuid primary key, cancelled_at timestamptz, completed_at timestamptz, purge_after timestamptz);
-    create table public.newsletter_subscribers (email text, handle text);
+    create table public.profile_subscribers (owner_user_id uuid, email_hash text);
     create table public.onboarding_drafts (email text);
     create table public.webhook_endpoints (owner_user_id uuid);
     create table public.oauth_clients (owner_user_id uuid, workspace_id uuid);

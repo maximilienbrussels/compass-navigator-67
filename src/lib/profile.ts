@@ -35,6 +35,39 @@ export interface ProfileBlock {
   /** Omni presentation metadata stays on this same revisioned block. */
   contentType?: "link" | "article" | "podcast" | "media";
   kineticTheme?: "aurora" | "glass";
+  /** Optional bento tile size; absent = the classic full-width row. */
+  size?: BlockSize;
+}
+
+export type BlockSize = "small" | "wide" | "large";
+export const BLOCK_SIZES: readonly BlockSize[] = ["small", "wide", "large"];
+
+/** Archived = switched off or past its end date; still kept, just not shown. */
+export function isArchivedBlock(block: Pick<ProfileBlock, "hidden" | "expiresAt">, now: number = Date.now()): boolean {
+  if (block.hidden) return true;
+  if (!block.expiresAt) return false;
+  const end = Date.parse(block.expiresAt);
+  return Number.isFinite(end) && end <= now;
+}
+
+/** Restoring an archived block: visible again and an elapsed end date is cleared. */
+export function restoreArchivedBlock<T extends Pick<ProfileBlock, "hidden" | "expiresAt">>(block: T, now: number = Date.now()): T {
+  const end = block.expiresAt ? Date.parse(block.expiresAt) : NaN;
+  const { expiresAt: _expired, ...rest } = block;
+  return (Number.isFinite(end) && end <= now ? { ...rest, hidden: false } : { ...block, hidden: false }) as T;
+}
+
+/** Countdown block value: an ISO target moment. Returns null when unreadable. */
+export function countdownTarget(value: string): number | null {
+  const t = Date.parse(value.trim());
+  return Number.isFinite(t) ? t : null;
+}
+
+/** Remaining time split for display; all zero once the moment passed. */
+export function countdownParts(target: number, now: number = Date.now()) {
+  const ms = Math.max(0, target - now);
+  const s = Math.floor(ms / 1000);
+  return { done: ms === 0, days: Math.floor(s / 86_400), hours: Math.floor((s % 86_400) / 3600), minutes: Math.floor((s % 3600) / 60), seconds: s % 60 };
 }
 
 export type BlockVisibilityRule = "always_visible" | "hide_when_focus_mode" | "show_only_when_live";
@@ -922,6 +955,12 @@ export const BLOCK_KINDS: {
     placeholder: "Schrijf een korte tekst…",
   },
   {
+    kind: "countdown",
+    label: "Aftelklok",
+    category: "layout" as const,
+    placeholder: "2026-12-31T20:00",
+  },
+  {
     kind: "spacer",
     label: "Spacer / witruimte",
     category: "layout" as const,
@@ -952,6 +991,7 @@ export const BLOCK_TABS: {
       "social_grid",
       "text",
       "spacer",
+      "countdown",
       "youtube",
       "spotify",
       "soundcloud",
@@ -1328,6 +1368,7 @@ export function blockHref(block: ProfileBlock): string {
     case "vcard":
     case "map_embed":
     case "event_list":
+    case "countdown":
       return "";
 
     case "calendar":
@@ -1362,7 +1403,8 @@ export const isWidgetBlock = (kind: string) =>
   kind === "faq_accordion" ||
   kind === "vcard" ||
   kind === "map_embed" ||
-  kind === "event_list";
+  kind === "event_list" ||
+  kind === "countdown";
 
 export const newBlockId = () =>
   `b_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;

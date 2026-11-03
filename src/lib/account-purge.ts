@@ -16,9 +16,7 @@ export function accountPurgeStatements(userId: string, authId: string) {
     { query: `select 1 / case when exists (select 1 from public.account_deletions where user_id = $1
         and cancelled_at is null and completed_at is null and purge_after <= now()) then 1 else 0 end as due`, params },
     { query: `select set_config('rout.purge_user_id', $1, true)`, params },
-    { query: `delete from public.newsletter_subscribers where lower(email) in
-        (select lower(email) from public.users where id = $1) or handle in
-        (select username from public.profiles where id = $1 union select handle from public.alias_profiles where user_id = $1)`, params },
+    { query: `delete from public.profile_subscribers where owner_user_id = $1`, params },
     { query: `delete from public.onboarding_drafts where lower(email) in (select lower(email) from public.users where id = $1)`, params },
     ...PURGE_OWNER_TABLES.map((table) => ({ query: `delete from public.${table} where user_id = $1`, params })),
     { query: `delete from public.merged_auth_account_archive where primary_user_id = $1`, params },

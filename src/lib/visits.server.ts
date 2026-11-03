@@ -124,6 +124,7 @@ export type VisitStats = {
   perDay: Array<{ date: string; visits: number }>;
   perLanguage: Array<{ locale: string; visits: number }>;
   perCountry: Array<{ country: string; visits: number }>;
+  perDevice: Array<{ device: string; visits: number }>;
   recent: Array<{
     at: string;
     handle: string;
@@ -143,6 +144,7 @@ const EMPTY: VisitStats = {
   perDay: [],
   perLanguage: [],
   perCountry: [],
+  perDevice: [],
   recent: [],
 };
 
@@ -162,7 +164,7 @@ export async function readVisitStats(
   const since = new Date(Date.now() - days * 86_400_000).toISOString();
   const spaceFilter = space === "all" ? null : space;
 
-  const [totals, perDayRows, perLangRows, perCountryRows, recentRows] = await Promise.all([
+  const [totals, perDayRows, perLangRows, perCountryRows, recentRows, perDeviceRows] = await Promise.all([
     sql`
       select count(*)::int as total,
              count(distinct visitor_hash)::int as unique_visitors,
@@ -206,6 +208,14 @@ export async function readVisitStats(
          and (${spaceFilter}::text is null or space = ${spaceFilter})
        order by created_at desc limit 50
     ` as Promise<Row[]>,
+    sql`
+      select coalesce(device, 'unknown') as device, count(*)::int as visits
+        from public.profile_visits
+       where profile_user_id = ${userId}
+         and created_at >= ${since}
+         and (${spaceFilter}::text is null or space = ${spaceFilter})
+       group by 1 order by 2 desc limit 5
+    ` as Promise<Row[]>,
   ]);
 
   const t = totals[0] ?? {};
@@ -229,6 +239,7 @@ export async function readVisitStats(
       country: String(r["country"]),
       visits: Number(r["visits"] ?? 0),
     })),
+    perDevice: perDeviceRows.map((r) => ({ device: String(r["device"] ?? "unknown"), visits: Number(r["visits"] ?? 0) })),
     recent: recentRows.map((r) => ({
       at: new Date(String(r["created_at"])).toISOString(),
       handle: String(r["handle"]),

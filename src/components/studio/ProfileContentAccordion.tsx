@@ -7,6 +7,7 @@ import { ProfileLinksManager } from "@/components/dashboard/editor/ProfileLinksM
 import { AddComponentModal, type WidgetId } from "@/components/studio/AddComponentModal";
 import { scheduledBlocks, type ProfileBlock } from "@/lib/profile";
 import { StudioSectionIcon } from "./StudioSectionIcon";
+import { ProfileImportCard } from "./ProfileImportCard";
 import { Switch } from "@/components/ui/switch";
 
 interface Props {
@@ -25,6 +26,8 @@ interface Props {
   handle?: string;
   /** Zet een profielwidget aan vanuit de catalogus. */
   onWidget?: (id: WidgetId) => void;
+  /** Import: take over name/subtitle from a restored export. */
+  onImportMeta?: (meta: { displayName: string | null; tagline: string | null }) => void;
 }
 
 /**
@@ -45,6 +48,7 @@ export function ProfileContentAccordion({
   children,
   handle,
   onWidget,
+  onImportMeta,
 }: Props) {
   const { t } = useTranslation();
   const [libraryOpen, setLibraryOpen] = useState(false);
@@ -92,8 +96,9 @@ export function ProfileContentAccordion({
           onOpenBlockChange={onOpenBlockChange}
           onOpenAddDrawer={onOpenAddDrawer}
         />
+        <ProfileImportCard blocks={blocks} onBlocksChange={onBlocksChange} onImportMeta={onImportMeta} />
         <details className="space-y-3 border-t border-border pt-4">
-          <summary className="cursor-pointer text-sm font-medium">Map- en kaartinstellingen</summary>
+          <summary className="cursor-pointer text-sm font-medium">{t("studio.content.cardSettings")}</summary>
           <div className="flex items-start justify-between gap-4 pt-3">
             <div className="min-w-0"><p className="text-sm font-medium">{t("studio.effects.title")}</p><p className="text-sm text-muted-foreground">{t("studio.effects.help")}</p></div>
             <Switch aria-label={t("studio.effects.title")} checked={cardEffects} onCheckedChange={onCardEffectsChange} />

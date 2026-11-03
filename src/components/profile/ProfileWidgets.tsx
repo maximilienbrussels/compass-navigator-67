@@ -89,10 +89,10 @@ export function NewsletterBlock({
   label: string;
   style: CSSProperties;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -100,10 +100,10 @@ export function NewsletterBlock({
     setBusy(true);
     try {
       const res = await subscribeNewsletter({
-        data: { handle, email: email.trim(), altcha: await takeProof() },
+        data: { handle, email: email.trim(), locale: i18n.language || null, altcha: await takeProof() },
       });
       if (res.ok) {
-        setDone(true);
+        setDone(res.message);
         toast.success(res.message);
       } else {
         toast.error(res.message);
@@ -122,7 +122,7 @@ export function NewsletterBlock({
         {label || t("profile.newsletterLabel")}
       </span>
       {done ? (
-        <span className="text-xs opacity-80"> {t("profile.subscribed")} </span>
+        <span className="text-xs opacity-80" role="status">{done}</span>
       ) : (
         <div className="flex gap-2">
           <input
@@ -144,6 +144,7 @@ export function NewsletterBlock({
              {t("profile.subscribe")} </button>
         </div>
       )}
+      {!done && <span className="text-[10px] opacity-60">{t("profile.signupPrivacy")}</span>}
       <Altcha />
     </form>
   );
