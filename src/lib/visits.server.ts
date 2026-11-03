@@ -261,7 +261,12 @@ export async function recordLinkClick(input: {
   if (/bot|crawler|spider|preview|curl|wget|monitor|lighthouse/i.test(userAgent)) {
     return { recorded: false };
   }
-  const visitorHash = await dailyVisitorHash(input.ip ?? "", userAgent);
+  const salt = visitHashSalt();
+  if (!salt) {
+    console.warn("[visits] CONTACT_HASH_SALT missing or shorter than 32 characters; click not recorded.");
+    return { recorded: false };
+  }
+  const visitorHash = await dailyVisitorHash(salt, input.ip ?? "", userAgent);
   const key = `${visitorHash}:${handle}:${blockId}`;
   const now = Date.now();
   const seen = recentClicks.get(key);
