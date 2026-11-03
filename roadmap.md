@@ -58,3 +58,12 @@
 - [x] Account-merge manifest: omni/presence tables marked "skip" (blocks merge instead of losing data) until a move strategy is reviewed
 - [ ] Not verified in the browser: admin pages and Studio need a signed-in admin session (Neon auth, none available here)
 - [ ] Community reviews have no submission or moderation flow in code yet (only approved rows are read)
+
+## Scoped identifiers & Login with ROUT (request 2026-11-03)
+- [ ] Stop leaking internal account UUIDs from public root/alias profile data; public components use handle-scoped reads.
+- [ ] Per-app pairwise `sub` (did:rout) with versioned key, `oauth_subjects` mapping, legacy-sub transition for public clients.
+- [ ] Refresh re-validates scopes against the client's current allowed scopes.
+- [ ] Signing-key KEK and subject key fail closed (legacy unseal kept).
+- [ ] Per-app pseudonymous linked_accounts identifiers.
+- [ ] Opaque hashed Bluesky fallback session token instead of plaintext userId cookie.
+- [ ] Tests for every rule; migrations applied; typecheck exit 0.
