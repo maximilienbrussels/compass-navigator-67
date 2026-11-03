@@ -11,7 +11,12 @@ import type { AdminConsoleTab } from "@/components/imported-pages/Admin";
 export const AdminPortalContext = createContext(false);
 export const useInAdminPortal = () => useContext(AdminPortalContext);
 
-type NavItem = { to: string; label: string; icon: typeof Shield; tab?: AdminConsoleTab };
+type AdminPath =
+  | "/admin" | "/admin/verifications" | "/admin/console" | "/admin/sepa" | "/admin/ops" | "/admin/oauth-apps"
+  | "/admin/members" | "/admin/handles" | "/admin/brands" | "/admin/subdomains" | "/admin/workspaces"
+  | "/admin/features" | "/admin/integrations" | "/admin/webhooks" | "/admin/custom-badges" | "/admin/finance"
+  | "/admin/gift-cards" | "/admin/contact" | "/admin/infra" | "/admin/team";
+type NavItem = { to: AdminPath; label: string; icon: typeof Shield; tab?: AdminConsoleTab };
 
 /**
  * Single map of the admin portal. Every admin screen must be reachable from
@@ -82,6 +87,12 @@ export const ADMIN_NAV_GROUPS: ReadonlyArray<{ label: string; items: ReadonlyArr
   },
 ];
 
+const linkClass = (active: boolean) =>
+  cn(
+    "flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors",
+    active ? "bg-secondary text-foreground" : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+  );
+
 export function AdminPortalNav() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const tab = useRouterState({ select: (s) => (s.location.search as { tab?: string }).tab });
@@ -103,17 +114,17 @@ export function AdminPortalNav() {
               const Icon = it.icon;
               return (
                 <li key={`${it.to}:${it.tab ?? ""}`}>
-                  <Link
-                    to={it.to}
-                    search={it.tab ? { tab: it.tab } : undefined}
-                    className={cn(
-                      "flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors",
-                      active ? "bg-secondary text-foreground" : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
-                    )}
-                  >
-                    <Icon className="h-4 w-4 shrink-0" aria-hidden />
-                    {it.label}
-                  </Link>
+                  {it.tab ? (
+                    <Link to="/admin/console" search={{ tab: it.tab }} className={linkClass(active)}>
+                      <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                      {it.label}
+                    </Link>
+                  ) : (
+                    <Link to={it.to} className={linkClass(active)}>
+                      <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                      {it.label}
+                    </Link>
+                  )}
                 </li>
               );
             })}
