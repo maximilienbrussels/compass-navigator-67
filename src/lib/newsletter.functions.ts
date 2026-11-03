@@ -19,6 +19,7 @@ const schema = z.object({
 export const subscribeNewsletter = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("signup_block");
     const { assertHuman } = await import("./altcha.server");
     await assertHuman(data.altcha ?? null);
     const { subscribeToNewsletter } = await import("./newsletter.server");

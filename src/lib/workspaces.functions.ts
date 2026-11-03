@@ -98,6 +98,7 @@ export const createWorkspace = createServerFn({ method: "POST" })
   .middleware([requireAuth])
   .inputValidator((d) => wizardSchema.parse(d))
   .handler(async ({ data, context }) => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("workspaces");
     const { sql } = await import("@/lib/neon");
     const { setActiveWorkspaceCookie } = await import("./workspaces.server");
     const { matrixWorkspaceSlug, isValidWorkspaceSlug } = await import("./workspace-rules");

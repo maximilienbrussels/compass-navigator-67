@@ -20,6 +20,7 @@ const schema = z.object({
 export const requestBooking = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("bookings");
     const today = new Date().toISOString().slice(0, 10);
     if (data.preferredDate < today) {
       return { ok: false, message: "Kies een datum in de toekomst." };

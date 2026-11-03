@@ -93,6 +93,7 @@ export const startTipPayment = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
+    await (await import("@/lib/platform-features.server")).assertPlatformFeature("tips");
     const { assertHuman } = await import("./altcha.server");
     await assertHuman(data.altcha ?? null);
     const { getRequest } = await import("@tanstack/react-start/server");
