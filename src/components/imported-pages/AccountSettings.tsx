@@ -550,25 +550,25 @@ export default function AccountSettings() {
           <ConvertToWorkspaceWizard />
 
           <section className="space-y-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
-            <h2 className="text-lg font-medium">Mijn gegevens</h2>
+            <h2 className="text-lg font-medium">{t("accountData.title")}</h2>
             <p className="text-sm text-muted-foreground">
-              Eén pagina met alles wat we bewaren: exporteren of definitief verwijderen.
+              {t("accountData.body")}
             </p>
             <Button asChild variant="outline" className="h-11 w-full sm:w-auto">
-              <Link to="/my-data">Open mijn gegevens</Link>
+              <Link to="/my-data">{t("accountData.open")}</Link>
             </Button>
           </section>
 
           <section className="space-y-4 rounded-2xl border border-red-500/30 bg-red-500/5 p-4 sm:p-5">
             <h2 className="flex items-center gap-2 text-lg font-medium text-red-600">
-              <AlertTriangle className="h-4 w-4" /> Danger Zone
+              <AlertTriangle className="h-4 w-4" /> {t("accountData.dangerZone")}
             </h2>
 
             <div className="flex flex-col gap-2 rounded-xl border border-border bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm font-medium text-foreground">Download Account Data</p>
+                <p className="text-sm font-medium text-foreground">{t("accountData.downloadTitle")}</p>
                 <p className="text-xs text-muted-foreground">
-                  Export your QR codes, dynamic links and profile data.
+                  {t("accountData.downloadBody")}
                 </p>
               </div>
               <Button
@@ -577,12 +577,12 @@ export default function AccountSettings() {
                 variant="outline"
                 className="gap-1.5"
               >
-                <Download className="h-4 w-4" /> Export JSON/ZIP
+                <Download className="h-4 w-4" /> {t("accountData.downloadButton")}
               </Button>
             </div>
 
             <DeleteAccountPanel />
-            <DocHelpLink to="/support/account/delete-account">Lees wat er exact met je data gebeurt.</DocHelpLink>
+            <DocHelpLink to="/support/account/delete-account">{t("accountData.deleteHelp")}</DocHelpLink>
           </section>
 
           <Button

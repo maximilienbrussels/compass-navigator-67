@@ -712,5 +712,6 @@
   "presence.expires": "verloopt {{when}}",
   "presence.end": "Pulse beëindigen",
   "presence.ended": "Pulse beëindigd",
-  "presence.endFailed": "Beëindigen mislukt"
+  "presence.endFailed": "Beëindigen mislukt",
+  "studio.links.scheduleInvalid": "De einddatum moet na de startdatum liggen."
 }

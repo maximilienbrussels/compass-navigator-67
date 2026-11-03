@@ -712,5 +712,6 @@
   "presence.expires": "expires {{when}}",
   "presence.end": "End pulse",
   "presence.ended": "Pulse ended",
-  "presence.endFailed": "Could not end pulse"
+  "presence.endFailed": "Could not end pulse",
+  "studio.links.scheduleInvalid": "The end date must be after the start date."
 }

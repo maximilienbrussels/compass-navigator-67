@@ -1709,5 +1709,13 @@
   "dataExport.title": "Download my data",
   "dataExport.body": "Everything we keep about you in one readable JSON file: profile, links, verified socials, email aliases and domains.",
   "dataExport.vault": "Full vault (ZIP)",
-  "dataExport.failed": "Export failed."
+  "dataExport.failed": "Export failed.",
+  "accountData.title": "My data",
+  "accountData.body": "One page with everything we store: export it or delete it for good.",
+  "accountData.open": "Open my data",
+  "accountData.downloadTitle": "Download account data",
+  "accountData.downloadBody": "Export your QR codes, dynamic links and profile data.",
+  "accountData.downloadButton": "Export JSON/ZIP",
+  "accountData.deleteHelp": "Read exactly what happens to your data.",
+  "accountData.dangerZone": "Danger zone"
 }
