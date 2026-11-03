@@ -16,9 +16,22 @@ export function walletOrigin(): string {
   return canonicalAppUrl().replace(/\/+$/, "");
 }
 
-async function digest(text: string): Promise<string> {
-  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`rout-card:${text}`));
-  return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join("");
+/**
+ * Card number source. Keyed per space (root/alias) with WALLET_ID_SECRET, so a
+ * card number can neither be computed from a leaked account id nor link a
+ * member's root and alias cards. Without the key it hashes only public data.
+ */
+async function cardDigest(space: "root" | "alias", accountId: string, handle: string): Promise<string> {
+  const enc = new TextEncoder();
+  const secret = process.env["WALLET_ID_SECRET"];
+  let bytes: ArrayBuffer;
+  if (secret && secret.length >= 32) {
+    const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+    bytes = await crypto.subtle.sign("HMAC", key, enc.encode(`rout-card:v2:${space}:${accountId}`));
+  } else {
+    bytes = await crypto.subtle.digest("SHA-256", enc.encode(`rout-card:public:${space}:${handle.toLowerCase()}`));
+  }
+  return [...new Uint8Array(bytes)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 /** Accepts a user id (uuid) or a handle; prefers the verified root profile, then the alias. */
@@ -53,7 +66,7 @@ export async function generateWalletPayload(userIdOrHandle: string, opts: { spac
         avatarSrc: profileImageSrc((p["avatar_url"] as string | null) ?? null),
       },
       base,
-      sovereignIdFromDigest(await digest(String(p["id"] ?? p["username"] ?? handle))),
+      sovereignIdFromDigest(await cardDigest(space, String(p["id"] ?? ""), String(p["username"] ?? handle))),
     );
   if (opts.space !== "alias") {
     const { readPublicProfile } = await import("@/lib/studio-profile.server");
