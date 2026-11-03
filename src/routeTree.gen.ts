@@ -187,6 +187,8 @@ import { Route as SolutionsCreatorsRouteImport } from './routes/solutions.creato
 import { Route as SolutionsDevelopersRouteImport } from './routes/solutions.developers'
 import { Route as StatsTokenRouteImport } from './routes/stats.$token'
 import { Route as StudioGridRouteImport } from './routes/studio_.grid'
+import { Route as SubscribeConfirmRouteImport } from './routes/subscribe.confirm'
+import { Route as SubscribeLeaveRouteImport } from './routes/subscribe.leave'
 import { Route as SupportIndexRouteImport } from './routes/support.index'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as WSlugRouteImport } from './routes/w.$slug'
@@ -1273,6 +1275,16 @@ const StatsTokenRoute = StatsTokenRouteImport.update({
 const StudioGridRoute = StudioGridRouteImport.update({
   id: '/studio_/grid',
   path: '/studio/grid',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscribeConfirmRoute = SubscribeConfirmRouteImport.update({
+  id: '/subscribe/confirm',
+  path: '/subscribe/confirm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscribeLeaveRoute = SubscribeLeaveRouteImport.update({
+  id: '/subscribe/leave',
+  path: '/subscribe/leave',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SupportIndexRoute = SupportIndexRouteImport.update({
@@ -2504,6 +2516,8 @@ export interface FileRoutesByFullPath {
   '/solutions/developers': typeof SolutionsDevelopersRoute
   '/stats/$token': typeof StatsTokenRoute
   '/studio/grid': typeof StudioGridRoute
+  '/subscribe/confirm': typeof SubscribeConfirmRoute
+  '/subscribe/leave': typeof SubscribeLeaveRoute
   '/u/$username': typeof UUsernameRoute
   '/w/$slug': typeof WSlugRoute
   '/workspace-transfer/$token': typeof WorkspaceTransferTokenRoute
@@ -2860,6 +2874,8 @@ export interface FileRoutesByTo {
   '/solutions/developers': typeof SolutionsDevelopersRoute
   '/stats/$token': typeof StatsTokenRoute
   '/studio/grid': typeof StudioGridRoute
+  '/subscribe/confirm': typeof SubscribeConfirmRoute
+  '/subscribe/leave': typeof SubscribeLeaveRoute
   '/u/$username': typeof UUsernameRoute
   '/w/$slug': typeof WSlugRoute
   '/workspace-transfer/$token': typeof WorkspaceTransferTokenRoute
@@ -3231,6 +3247,8 @@ export interface FileRoutesById {
   '/solutions/developers': typeof SolutionsDevelopersRoute
   '/stats/$token': typeof StatsTokenRoute
   '/studio_/grid': typeof StudioGridRoute
+  '/subscribe/confirm': typeof SubscribeConfirmRoute
+  '/subscribe/leave': typeof SubscribeLeaveRoute
   '/u/$username': typeof UUsernameRoute
   '/w/$slug': typeof WSlugRoute
   '/workspace-transfer/$token': typeof WorkspaceTransferTokenRoute
@@ -3604,6 +3622,8 @@ export interface FileRouteTypes {
     | '/solutions/developers'
     | '/stats/$token'
     | '/studio/grid'
+    | '/subscribe/confirm'
+    | '/subscribe/leave'
     | '/u/$username'
     | '/w/$slug'
     | '/workspace-transfer/$token'
@@ -3960,6 +3980,8 @@ export interface FileRouteTypes {
     | '/solutions/developers'
     | '/stats/$token'
     | '/studio/grid'
+    | '/subscribe/confirm'
+    | '/subscribe/leave'
     | '/u/$username'
     | '/w/$slug'
     | '/workspace-transfer/$token'
@@ -4330,6 +4352,8 @@ export interface FileRouteTypes {
     | '/solutions/developers'
     | '/stats/$token'
     | '/studio_/grid'
+    | '/subscribe/confirm'
+    | '/subscribe/leave'
     | '/u/$username'
     | '/w/$slug'
     | '/workspace-transfer/$token'
@@ -4631,6 +4655,8 @@ export interface RootRouteChildren {
   SSlugRoute: typeof SSlugRoute
   StatsTokenRoute: typeof StatsTokenRoute
   StudioGridRoute: typeof StudioGridRoute
+  SubscribeConfirmRoute: typeof SubscribeConfirmRoute
+  SubscribeLeaveRoute: typeof SubscribeLeaveRoute
   UUsernameRoute: typeof UUsernameRoute
   WSlugRoute: typeof WSlugRoute
   WorkspaceTransferTokenRoute: typeof WorkspaceTransferTokenRoute
@@ -5982,6 +6008,20 @@ declare module '@tanstack/react-router' {
       path: '/studio/grid'
       fullPath: '/studio/grid'
       preLoaderRoute: typeof StudioGridRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscribe/confirm': {
+      id: '/subscribe/confirm'
+      path: '/subscribe/confirm'
+      fullPath: '/subscribe/confirm'
+      preLoaderRoute: typeof SubscribeConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscribe/leave': {
+      id: '/subscribe/leave'
+      path: '/subscribe/leave'
+      fullPath: '/subscribe/leave'
+      preLoaderRoute: typeof SubscribeLeaveRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/support/': {
@@ -7994,6 +8034,8 @@ const rootRouteChildren: RootRouteChildren = {
   SSlugRoute: SSlugRoute,
   StatsTokenRoute: StatsTokenRoute,
   StudioGridRoute: StudioGridRoute,
+  SubscribeConfirmRoute: SubscribeConfirmRoute,
+  SubscribeLeaveRoute: SubscribeLeaveRoute,
   UUsernameRoute: UUsernameRoute,
   WSlugRoute: WSlugRoute,
   WorkspaceTransferTokenRoute: WorkspaceTransferTokenRoute,

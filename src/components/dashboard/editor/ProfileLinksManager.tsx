@@ -59,6 +59,7 @@ import {
   PollBlockSettings,
 } from "@/components/dashboard/InteractionBlockSettings";
 import { VCardBlockSettings } from "@/components/dashboard/VCardBlockSettings";
+import { NewsletterBlockSettings } from "@/components/dashboard/NewsletterBlockSettings";
 
 interface ProfileLinksManagerProps {
   blocks: ProfileBlock[];
@@ -393,6 +394,11 @@ export function ProfileLinksManager({
                       onChange={(value) => patch(b.id, { value })}
                       onTitle={(label) => patch(b.id, { label })}
                     />
+                  ) : b.kind === "newsletter" ? (
+                    <>
+                      <Input aria-label={t("studio.links.label")} value={b.label} maxLength={100} onChange={(e) => patch(b.id, { label: e.target.value })} />
+                      <NewsletterBlockSettings value={b.value} onChange={(value) => patch(b.id, { value })} />
+                    </>
                   ) : b.kind === "countdown" ? (
                     <>
                       <Input aria-label={t("studio.links.label")} value={b.label} maxLength={100} onChange={(e) => patch(b.id, { label: e.target.value })} />
