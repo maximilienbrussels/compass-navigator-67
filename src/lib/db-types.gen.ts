@@ -7,9 +7,12 @@ export type PublicAppCredentialType = "badge" | "certificate" | "diploma";
 export type PublicAppRole = "admin" | "moderator" | "user";
 export type PublicClaimVerificationProvider = "none" | "itsme" | "eidas";
 export type PublicIdentityProvider = "w_identity" | "didit" | "manual";
+export type PublicOmniContentType = "article" | "podcast" | "program" | "short" | "event" | "social";
+export type PublicOmniJobStatus = "queued" | "processing" | "ready" | "failed";
 export type PublicParentActionType = "consent" | "payment";
 export type PublicParentAuthorizationStatus = "pending" | "approved" | "expired";
 export type PublicParentConsentStatus = "none" | "pending" | "approved";
+export type PublicPresenceStatusType = "qa_reply" | "micro_text" | "omni_drop";
 export type PublicQaPermissionLevel = "disabled" | "verified_only" | "members_only" | "public_unrestricted";
 export type PublicRootRedirectKind = "profile_hub" | "custom_url" | "rout_main" | "none";
 export type PublicWorkspaceRole = "owner" | "admin" | "developer" | "editor" | "viewer";
@@ -700,6 +703,16 @@ export interface PublicEntitlementOverridesRow {
   "created_at": string | Date;
 }
 
+export interface PublicEphemeralStatusesRow {
+  "id": string;
+  "user_id": string;
+  "space": string;
+  "status_type": PublicPresenceStatusType;
+  "content_payload": JsonValue;
+  "created_at": string | Date;
+  "expires_at": string | Date;
+}
+
 export interface PublicFediverseEmailOtpRow {
   "pending_key": string;
   "email": string;
@@ -959,19 +972,6 @@ export interface PublicMergedAuthAccountArchiveRow {
   "archived_at": string | Date;
 }
 
-export interface PublicNewsletterSubscribersRow {
-  "id": string;
-  "handle": string;
-  "email": string;
-  "source": string;
-  "brevo_list_id": number | null;
-  "brevo_synced_at": string | Date | null;
-  "brevo_error": string | null;
-  "unsubscribed_at": string | Date | null;
-  "created_at": string | Date;
-  "updated_at": string | Date;
-}
-
 export interface PublicNfcWaitlistRow {
   "user_id": string;
   "material": string | null;
@@ -1170,6 +1170,50 @@ export interface PublicOauthStepUpCodesRow {
   "method": string;
 }
 
+export interface PublicOmniIngestTokensRow {
+  "user_id": string;
+  "token_hash": string;
+  "created_at": string | Date;
+}
+
+export interface PublicOmniJobsRow {
+  "id": string;
+  "user_id": string;
+  "source": string;
+  "source_url": string;
+  "title_override": string | null;
+  "media_hint": string | null;
+  "status": PublicOmniJobStatus;
+  "content_type": PublicOmniContentType | null;
+  "title": string | null;
+  "meta_tag": string | null;
+  "target_url": string | null;
+  "local_media_path": string | null;
+  "kinetic_preview_path": string | null;
+  "error": string | null;
+  "attempts": number;
+  "created_at": string | Date;
+  "updated_at": string | Date;
+  "lease_token": string | null;
+  "next_attempt_at": string | Date;
+}
+
+export interface PublicOmniMatrixItemsRow {
+  "id": string;
+  "user_id": string;
+  "profile_space": string;
+  "block_id": string;
+  "source_item_id": string;
+  "content_type": PublicOmniContentType;
+  "image_path": string;
+  "target_url": string | null;
+  "title": string;
+  "meta_tag": string | null;
+  "is_hero": boolean;
+  "kinetic_preview_path": string | null;
+  "created_at": string | Date;
+}
+
 export interface PublicOnboardingDraftsRow {
   "email": string;
   "draft": JsonValue;
@@ -1214,6 +1258,21 @@ export interface PublicPollVotesRow {
   "option_index": number;
   "voter_key": string;
   "created_at": string | Date;
+}
+
+export interface PublicPresenceBroadcastJobsRow {
+  "id": string;
+  "user_id": string;
+  "event_id": string;
+  "space": string;
+  "provider": string;
+  "payload": JsonValue;
+  "attempts": number;
+  "created_at": string | Date;
+  "next_attempt_at": string | Date;
+  "claimed_until": string | Date | null;
+  "delivered_at": string | Date | null;
+  "last_status": number | null;
 }
 
 export interface PublicPricingSettingsRow {
@@ -1306,6 +1365,27 @@ export interface PublicProfileQuestionsRow {
   "abuse_key": string | null;
   "abuse_key_until": string | Date | null;
   "visible_after": string | Date;
+}
+
+export interface PublicProfileSubscribersRow {
+  "id": string;
+  "owner_user_id": string;
+  "handle": string;
+  "space": string;
+  "email_hash": string;
+  "email_ciphertext": string;
+  "email_iv": string;
+  "status": string;
+  "confirm_token_hash": string | null;
+  "unsubscribe_token_hash": string;
+  "locale": string | null;
+  "brevo_list_id": number | null;
+  "brevo_synced_at": string | Date | null;
+  "brevo_error": string | null;
+  "created_at": string | Date;
+  "updated_at": string | Date;
+  "confirmed_at": string | Date | null;
+  "unsubscribed_at": string | Date | null;
 }
 
 export interface PublicProfileVisitsRow {
@@ -1668,6 +1748,22 @@ export interface PublicSocialFollowLinksRow {
   "network": string;
   "remote_actor": string;
   "direction": string;
+  "created_at": string | Date;
+}
+
+export interface PublicSocialGridItemsRow {
+  "id": string;
+  "user_id": string;
+  "profile_space": string;
+  "block_id": string;
+  "source_item_id": string;
+  "platform": string;
+  "media_url": string;
+  "caption": string;
+  "target_url": string | null;
+  "is_pinned": boolean;
+  "is_video": boolean;
+  "position": number;
   "created_at": string | Date;
 }
 
@@ -2273,6 +2369,7 @@ export interface DbTables {
   "public.domain_claims": PublicDomainClaimsRow;
   "public.email_aliases": PublicEmailAliasesRow;
   "public.entitlement_overrides": PublicEntitlementOverridesRow;
+  "public.ephemeral_statuses": PublicEphemeralStatusesRow;
   "public.fediverse_email_otp": PublicFediverseEmailOtpRow;
   "public.feedback_forms": PublicFeedbackFormsRow;
   "public.feedback_responses": PublicFeedbackResponsesRow;
@@ -2295,7 +2392,6 @@ export interface DbTables {
   "public.login_codes": PublicLoginCodesRow;
   "public.mastodon_app_registrations": PublicMastodonAppRegistrationsRow;
   "public.merged_auth_account_archive": PublicMergedAuthAccountArchiveRow;
-  "public.newsletter_subscribers": PublicNewsletterSubscribersRow;
   "public.nfc_waitlist": PublicNfcWaitlistRow;
   "public.notifications": PublicNotificationsRow;
   "public.oauth_access_tokens": PublicOauthAccessTokensRow;
@@ -2311,11 +2407,15 @@ export interface DbTables {
   "public.oauth_signing_keys": PublicOauthSigningKeysRow;
   "public.oauth_step_up_challenges": PublicOauthStepUpChallengesRow;
   "public.oauth_step_up_codes": PublicOauthStepUpCodesRow;
+  "public.omni_ingest_tokens": PublicOmniIngestTokensRow;
+  "public.omni_jobs": PublicOmniJobsRow;
+  "public.omni_matrix_items": PublicOmniMatrixItemsRow;
   "public.onboarding_drafts": PublicOnboardingDraftsRow;
   "public.parent_authorizations": PublicParentAuthorizationsRow;
   "public.phone_otp_codes": PublicPhoneOtpCodesRow;
   "public.platform_integration_switches": PublicPlatformIntegrationSwitchesRow;
   "public.poll_votes": PublicPollVotesRow;
+  "public.presence_broadcast_jobs": PublicPresenceBroadcastJobsRow;
   "public.pricing_settings": PublicPricingSettingsRow;
   "public.pro_waitlist": PublicProWaitlistRow;
   "public.profile_design_templates": PublicProfileDesignTemplatesRow;
@@ -2324,6 +2424,7 @@ export interface DbTables {
   "public.profile_ingest_tokens": PublicProfileIngestTokensRow;
   "public.profile_link_clicks": PublicProfileLinkClicksRow;
   "public.profile_questions": PublicProfileQuestionsRow;
+  "public.profile_subscribers": PublicProfileSubscribersRow;
   "public.profile_visits": PublicProfileVisitsRow;
   "public.profiles": PublicProfilesRow;
   "public.promo_code_events": PublicPromoCodeEventsRow;
@@ -2352,6 +2453,7 @@ export interface DbTables {
   "public.signin_throttle": PublicSigninThrottleRow;
   "public.social_block_settings": PublicSocialBlockSettingsRow;
   "public.social_follow_links": PublicSocialFollowLinksRow;
+  "public.social_grid_items": PublicSocialGridItemsRow;
   "public.social_links": PublicSocialLinksRow;
   "public.subdomain_root_claims": PublicSubdomainRootClaimsRow;
   "public.telegram_verify_sessions": PublicTelegramVerifySessionsRow;
