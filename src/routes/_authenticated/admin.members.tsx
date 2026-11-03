@@ -27,6 +27,8 @@ export const Route = createFileRoute("/_authenticated/admin/members")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { q?: string } =>
+    typeof search["q"] === "string" && search["q"] ? { q: search["q"].slice(0, 120) } : {},
   component: MembersPage,
 });
 
@@ -47,7 +49,8 @@ const fmt = (v: string | null) => (v ? new Date(v).toLocaleString("nl-BE") : "â€
 function MembersPage() {
   const { user } = useAuth();
   const myId = (user as { id?: string } | null)?.id ?? null;
-  const [query, setQuery] = useState("");
+  const { q } = Route.useSearch();
+  const [query, setQuery] = useState(q ?? "");
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<Filter>("all");
   const [data, setData] = useState<Page | null>(null);
