@@ -43,6 +43,7 @@ import {
   liveStateFromPresence,
   nextScheduleBoundary,
   themeOf,
+  type ProfileBlock,
   type ProfileRecord,
 } from "@/lib/profile";
 import {
@@ -52,6 +53,8 @@ import {
   isBookingUrl,
 } from "@/components/profile/ProfileWidgets";
 import { BookingCard } from "@/components/profile/BookingCard";
+import { CountdownCard } from "@/components/profile/CountdownCard";
+import { toast } from "sonner";
 import { parseBookingConfig } from "@/lib/booking";
 import { GalleryCard } from "@/components/profile/GalleryCard";
 import { SocialGridCard } from "@/components/profile/SocialGridCard";
@@ -180,6 +183,13 @@ export function ProfileView({
       b.kind === "booking_request" ||
       b.kind === "spacer" || isProfileSectionKind(b.kind),
   );
+  /** Bento mode only when the member gave at least one block a tile size. */
+  const bento = blocks.some((b) => b.size);
+  const bentoCell = (b: ProfileBlock, node: React.ReactNode) => {
+    if (!bento || node === null) return node;
+    const span = b.size === "small" ? "col-span-1" : b.size === "large" ? "col-span-2 [&>*]:min-h-40 [&>*]:h-full" : "col-span-2";
+    return <div key={b.id} className={cn("flex min-w-0 [&>*]:w-full", span)} data-tile={b.size ?? "row"}>{node}</div>;
+  };
   const liveProviders = profile.blocks.filter((b) => b.kind === "live").map((b) => b.value);
   /** Accent-animatie op de gekozen hoofdlink (glow, pulse of shimmer). */
   const ctaClass = (blockId: string) => {
@@ -358,6 +368,16 @@ export function ProfileView({
   return (
     <main
       ref={mainRef}
+      onClickCapture={preview ? (event) => {
+        // Studio preview: links and forms stay inside the editor instead of navigating away.
+        const anchor = (event.target as HTMLElement | null)?.closest?.("a[href]");
+        if (!anchor) return;
+        const href = anchor.getAttribute("href") ?? "";
+        if (href.startsWith("#")) return;
+        event.preventDefault();
+        event.stopPropagation();
+        toast.info(tx("profile.previewNoNavigate"), { id: "preview-no-navigate" });
+      } : undefined}
       data-profile-theme={t.id}
       className={`relative isolate min-h-screen w-full overflow-hidden px-4 pb-[calc(3rem+env(safe-area-inset-bottom))] ${banner ? "pt-0" : "pt-[calc(3rem+env(safe-area-inset-top))]"} ${wireframe ? "rout-wireframe" : ""}`}
       style={{
@@ -653,12 +673,12 @@ export function ProfileView({
 
         <div className="flex w-full flex-col items-center" style={sectionStyle("blocks")}>
 
-         <div className={`mt-8 grid w-full gap-3 ${wide ? "lg:grid-cols-2" : "grid-cols-1"}`}>
+         <div className={`mt-8 grid w-full gap-3 ${bento ? "grid-cols-2" : wide ? "lg:grid-cols-2" : "grid-cols-1"}`}>
           {blocks.length === 0 && (
             <p className="text-center text-sm" style={{ color: t.muted }}>
                {tx("profile.noLinks")} </p>
           )}
-          {blocks.map((b) =>
+          {blocks.map((b) => bentoCell(b,
             b.kind === "widget:guestbook" ? (
               profile.username && prefs.guestbookEnabled ? <div key={b.id} className="w-full lg:col-span-full"><ProfileGuestbook handle={profile.username} theme={t} /></div> : null
             ) : b.kind === "widget:badges" ? (
@@ -692,7 +712,9 @@ export function ProfileView({
                 accent={t.accent ?? t.border ?? "currentColor"}
               />
             ) : isWidgetBlock(b.kind) || isBookingUrl(blockHref(b)) ? (
-              b.kind === "media_gallery" ? (
+              b.kind === "countdown" ? (
+                <CountdownCard key={b.id} label={b.label} value={b.value} style={styleFor(b.kind)} />
+              ) : b.kind === "media_gallery" ? (
                 <GalleryCard key={b.id} config={parseGalleryConfig(b.value)} style={styleFor(b.kind)} />
               ) : b.kind === "social_grid" ? (
                 <div key={b.id} className="w-full lg:col-span-full"><SocialGridCard config={parseSocialGridConfig(b.value)} style={styleFor(b.kind)} /></div>
@@ -817,7 +839,7 @@ export function ProfileView({
                 ))}
               </a>
             ),
-          )}
+          ))}
         </div>
 
         {prefs.socialPosition === "bottom" && socialRow}
