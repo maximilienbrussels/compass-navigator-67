@@ -13,8 +13,8 @@ const root = walletCardPayload({ handle: "Jona", space: "root", displayName: "Jo
 const alias = walletCardPayload({ handle: "studio", space: "alias", displayName: null, tagline: "Maker  van dingen", themeBg: "#f7f4ef", avatarSrc: "https://evil.example/a.png" }, base, "ROUT-0000-0000");
 
 describe("ROUT Card wallet payload", () => {
-  it("QR points at the real public profile: root at /<handle>, alias at /u/<handle>", () => {
-    expect(root.qrValue).toBe("https://rout.be/jona");
+  it("QR points at the real public profile: root at /@<handle>, alias at /u/<handle>", () => {
+    expect(root.qrValue).toBe("https://rout.be/@jona");
     expect(alias.qrValue).toBe("https://rout.be/u/studio");
   });
 
@@ -33,7 +33,7 @@ describe("ROUT Card wallet payload", () => {
     expect(o.classId).toBe("3388000000000000000.rout_card");
     expect(o.header.defaultValue.value).toBe("@jona");
     expect(o.hexBackgroundColor).toBe("#0d0d0d");
-    expect(o.barcode).toMatchObject({ type: "QR_CODE", value: "https://rout.be/jona" });
+    expect(o.barcode).toMatchObject({ type: "QR_CODE", value: "https://rout.be/@jona" });
     expect(o.heroImage?.sourceUri.uri).toBe(root.heroImageUrl);
   });
 

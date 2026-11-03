@@ -190,7 +190,8 @@ export function walletCardPayload(
   sovereignId: string,
 ): WalletCardPayload {
   const handle = p.handle.toLowerCase();
-  const url = `${base}/${p.space === "alias" ? "u/" : ""}${encodeURIComponent(handle)}`;
+  // Canonical public addresses (no redirect hop when scanned): root /@handle, alias /u/handle.
+  const url = `${base}/${p.space === "alias" ? "u/" : "@"}${encodeURIComponent(handle)}`;
   const bg = p.themeBg && HEX6.test(p.themeBg) ? p.themeBg.toLowerCase() : "#111111";
   const tagline = (p.tagline ?? "").replace(/\s+/g, " ").trim();
   return {
