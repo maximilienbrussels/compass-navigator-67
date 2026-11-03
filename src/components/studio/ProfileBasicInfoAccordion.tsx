@@ -220,6 +220,73 @@ export function ProfileBasicInfoAccordion({
                 />
               </div>
 
+              <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-background px-3 py-2">
+                <span className="min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground">
+                  rout.be{styledProfilePath(normalized || "handle", urlStyle)}
+                </span>
+                <button
+                  type="button"
+                  onClick={onEditHandle}
+                  className="shrink-0 rounded-lg border border-border px-2 py-1 text-[11px] font-medium hover:bg-muted"
+                >
+                  {t("studio.basic.editHandle")}
+                </button>
+                {cta === "verified" ? (
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-border px-2 py-1 text-[11px] font-medium">
+                    <BadgeCheck className="h-3 w-3 text-primary" aria-hidden /> {t("studio.basic.verified")}
+                  </span>
+                ) : cta === "pending" ? (
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-border px-2 py-1 text-[11px] font-medium text-muted-foreground">
+                    <Clock className="h-3 w-3" aria-hidden /> {t("studio.basic.pending")}
+                  </span>
+                ) : cta === "request" ? (
+                  <button
+                    type="button"
+                    onClick={() => setVerifyOpen(true)}
+                    className="shrink-0 rounded-lg border border-primary/40 bg-primary/10 px-2 py-1 text-[11px] font-medium text-primary hover:bg-primary/15"
+                  >
+                    {t("studio.basic.requestVerify")}
+                  </button>
+                ) : null}
+                <VerifiedModal open={verifyOpen} onClose={() => setVerifyOpen(false)} />
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(
+                      `https://rout.be${styledProfilePath(normalized || "handle", urlStyle)}`,
+                    );
+                    toast.success(t("studio.basic.copied"));
+                  }}
+                  className="shrink-0 rounded-lg border border-border px-2 py-1 text-[11px] font-medium hover:bg-muted"
+                >
+                  {t("studio.basic.copyLink")}
+                </button>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between gap-3">
+                  <label className="inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+                    <MapPin className="h-3 w-3" aria-hidden /> {t("studio.basic.location")}
+                  </label>
+                  <span className="inline-flex items-center gap-2 text-[11px] text-muted-foreground">
+                    {t("studio.basic.visible")}
+                    <Switch
+                      checked={prefs.locationVisible}
+                      onCheckedChange={(v) => setPref("locationVisible", v)}
+                      aria-label={t("studio.basic.locationAria")}
+                    />
+                  </span>
+                </div>
+                <Input
+                  value={prefs.locationBadge ?? ""}
+                  maxLength={60}
+                  placeholder={t("studio.basic.locationPlaceholder")}
+                  onChange={(e) => setPref("locationBadge", e.target.value || null)}
+                  className="input-field h-10 rounded-xl"
+                  aria-label={t("studio.basic.location")}
+                />
+              </div>
+
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-medium text-muted-foreground">
@@ -264,74 +331,7 @@ export function ProfileBasicInfoAccordion({
                     ))}
                 </div>
               </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center justify-between gap-3">
-                  <label className="inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
-                    <MapPin className="h-3 w-3" aria-hidden /> {t("studio.basic.location")}
-                  </label>
-                  <span className="inline-flex items-center gap-2 text-[11px] text-muted-foreground">
-                    {t("studio.basic.visible")}
-                    <Switch
-                      checked={prefs.locationVisible}
-                      onCheckedChange={(v) => setPref("locationVisible", v)}
-                      aria-label={t("studio.basic.locationAria")}
-                    />
-                  </span>
-                </div>
-                <Input
-                  value={prefs.locationBadge ?? ""}
-                  maxLength={60}
-                  placeholder={t("studio.basic.locationPlaceholder")}
-                  onChange={(e) => setPref("locationBadge", e.target.value || null)}
-                  className="input-field h-10 rounded-xl"
-                  aria-label={t("studio.basic.location")}
-                />
-              </div>
             </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-background px-3 py-2">
-            <span className="min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground">
-              rout.be{styledProfilePath(normalized || "handle", urlStyle)}
-            </span>
-            <button
-              type="button"
-              onClick={onEditHandle}
-              className="shrink-0 rounded-lg border border-border px-2 py-1 text-[11px] font-medium hover:bg-muted"
-            >
-              {t("studio.basic.editHandle")}
-            </button>
-            {cta === "verified" ? (
-              <span className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-border px-2 py-1 text-[11px] font-medium">
-                <BadgeCheck className="h-3 w-3 text-primary" aria-hidden /> {t("studio.basic.verified")}
-              </span>
-            ) : cta === "pending" ? (
-              <span className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-border px-2 py-1 text-[11px] font-medium text-muted-foreground">
-                <Clock className="h-3 w-3" aria-hidden /> {t("studio.basic.pending")}
-              </span>
-            ) : cta === "request" ? (
-              <button
-                type="button"
-                onClick={() => setVerifyOpen(true)}
-                className="shrink-0 rounded-lg border border-primary/40 bg-primary/10 px-2 py-1 text-[11px] font-medium text-primary hover:bg-primary/15"
-              >
-                {t("studio.basic.requestVerify")}
-              </button>
-            ) : null}
-            <VerifiedModal open={verifyOpen} onClose={() => setVerifyOpen(false)} />
-            <button
-              type="button"
-              onClick={() => {
-                void navigator.clipboard.writeText(
-                  `https://rout.be${styledProfilePath(normalized || "handle", urlStyle)}`,
-                );
-                toast.success(t("studio.basic.copied"));
-              }}
-              className="shrink-0 rounded-lg border border-border px-2 py-1 text-[11px] font-medium hover:bg-muted"
-            >
-              {t("studio.basic.copyLink")}
-            </button>
           </div>
         </section>
       </AccordionContent>
