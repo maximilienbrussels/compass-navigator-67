@@ -58,6 +58,7 @@ export const SYSTEM_SLUGS = [
   "rout",
   "s",
   "security",
+  "subscribe",
   "self-hosting",
   "settings",
   "signature",
