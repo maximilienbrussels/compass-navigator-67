@@ -21,7 +21,6 @@ export function useRecordVisit(handle: string | null | undefined, space: VisitSp
         space,
         path: window.location.pathname,
         locale,
-        referrer: document.referrer || null,
       },
     }).catch(() => undefined);
   }, [handle, space, record]);

@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { countdownParts, countdownTarget, isArchivedBlock, restoreArchivedBlock } from "./profile";
-import { referrerDomainOf } from "./visit-referrer";
 
 const NOW = Date.parse("2026-11-03T12:00:00.000Z");
 
-describe("archive, countdown and referrer rules", () => {
+describe("archive and countdown rules", () => {
   it("archives switched-off and expired blocks only", () => {
     expect(isArchivedBlock({ hidden: true }, NOW)).toBe(true);
     expect(isArchivedBlock({ expiresAt: "2026-11-03T11:59:00.000Z" }, NOW)).toBe(true);
@@ -25,12 +24,4 @@ describe("archive, countdown and referrer rules", () => {
     expect(countdownTarget("geen datum")).toBeNull();
   });
 
-  it("stores only the bare referring domain and treats own pages as direct", () => {
-    expect(referrerDomainOf("https://www.instagram.com/p/abc?utm=1")).toBe("instagram.com");
-    expect(referrerDomainOf("https://rout.be/jona")).toBeNull();
-    expect(referrerDomainOf("https://jona.rout.be/")).toBeNull();
-    expect(referrerDomainOf("https://example.be/x", ["example.be"])).toBeNull();
-    expect(referrerDomainOf("android-app://com.slack")).toBeNull();
-    expect(referrerDomainOf("")).toBeNull();
-  });
 });

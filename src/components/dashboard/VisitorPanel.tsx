@@ -194,17 +194,11 @@ export function VisitorPanel({ defaultSpace = "all" }: { defaultSpace?: SpaceFil
           rows={(stats?.perCountry ?? []).map((c) => ({ key: c.country, label: c.country === "??" ? t("visits.unknown") : countryLabel(c.country), value: c.visits }))}
         />
         <BarList
-          title={t("visits.perReferrer")}
+          title={t("visits.perDevice")}
           empty={t("visits.empty")}
-          rows={(stats?.perReferrer ?? []).map((r) => ({ key: r.domain || "direct", label: r.domain || t("visits.direct"), value: r.visits }))}
+          rows={(stats?.perDevice ?? []).map((d) => ({ key: d.device, label: t(`visits.device.${d.device === "mobile" || d.device === "tablet" || d.device === "desktop" ? d.device : "unknown"}`), value: d.visits }))}
         />
       </div>
-
-      <BarList
-        title={t("visits.perDevice")}
-        empty={t("visits.empty")}
-        rows={(stats?.perDevice ?? []).map((d) => ({ key: d.device, label: t(`visits.device.${d.device === "mobile" || d.device === "tablet" || d.device === "desktop" ? d.device : "unknown"}`), value: d.visits }))}
-      />
 
       <div className="rounded-xl border border-border p-3">
         <p className="mb-2 text-[11px] uppercase tracking-wide text-muted-foreground">

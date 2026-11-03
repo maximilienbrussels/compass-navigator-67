@@ -18,7 +18,6 @@ export const recordProfileVisit = createServerFn({ method: "POST" })
       space: VisitSpace;
       path?: string | null;
       locale?: string | null;
-      referrer?: string | null;
     }) => input,
   )
   .handler(async ({ data }) => {
@@ -36,8 +35,6 @@ export const recordProfileVisit = createServerFn({ method: "POST" })
         ip,
         userAgent: getRequestHeader("user-agent") ?? null,
         country: getRequestHeader("cf-ipcountry") ?? null,
-        referrer: typeof data.referrer === "string" ? data.referrer : null,
-        host: getRequestHeader("host") ?? null,
       });
     } catch {
       // Bezoekregistratie mag nooit een profielpagina breken.
