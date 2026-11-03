@@ -1334,7 +1334,7 @@ export function ProfileEditor({ variant = "verified", pageMode = "profile", onPa
                       bio={tagline}
                       handle={isWorkspace ? (wsCanvas?.slug ?? workspaceSlug ?? "") : normalized || handle}
                     />
-                    {!isWorkspace && <RoutCardLauncher handle={normalized || handle} />}
+                    {!isWorkspace && <RoutCardLauncher handle={normalized || handle} space={alias ? "alias" : "root"} />}
                   </section>
                 </AccordionContent>
               </AccordionItem>
