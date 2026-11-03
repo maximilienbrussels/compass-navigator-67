@@ -187,6 +187,25 @@ export function VisitorPanel({ defaultSpace = "all" }: { defaultSpace?: SpaceFil
         )}
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-2">
+        <BarList
+          title={t("visits.perCountry")}
+          empty={t("visits.empty")}
+          rows={(stats?.perCountry ?? []).map((c) => ({ key: c.country, label: c.country === "??" ? t("visits.unknown") : countryLabel(c.country), value: c.visits }))}
+        />
+        <BarList
+          title={t("visits.perReferrer")}
+          empty={t("visits.empty")}
+          rows={(stats?.perReferrer ?? []).map((r) => ({ key: r.domain || "direct", label: r.domain || t("visits.direct"), value: r.visits }))}
+        />
+      </div>
+
+      <BarList
+        title={t("visits.perDevice")}
+        empty={t("visits.empty")}
+        rows={(stats?.perDevice ?? []).map((d) => ({ key: d.device, label: t(`visits.device.${d.device === "mobile" || d.device === "tablet" || d.device === "desktop" ? d.device : "unknown"}`), value: d.visits }))}
+      />
+
       <div className="rounded-xl border border-border p-3">
         <p className="mb-2 text-[11px] uppercase tracking-wide text-muted-foreground">
           {t("visits.perLink")}
@@ -234,23 +253,56 @@ export function VisitorPanel({ defaultSpace = "all" }: { defaultSpace?: SpaceFil
           </ul>
         ) : (
           <p className="py-4 text-center text-xs text-muted-foreground">
-            Nog geen bezoeken geregistreerd. Deel je profiel-link of QR om je eerste bezoekers te zien.
+            {t("visits.noneYet")}
           </p>
         )}
         {recentPage.pages > 1 && (
           <div className="mt-2 flex items-center justify-between gap-2 border-t border-border/60 pt-2 text-xs">
             <Button size="sm" variant="outline" disabled={recentPage.page <= 1} onClick={() => setPage(recentPage.page - 1)}>
-              Vorige
+              {t("visits.prev")}
             </Button>
             <span className="text-muted-foreground">
-              Pagina {recentPage.page} van {recentPage.pages}
+              {t("visits.page", { page: String(recentPage.page), pages: String(recentPage.pages) })}
             </span>
             <Button size="sm" variant="outline" disabled={recentPage.page >= recentPage.pages} onClick={() => setPage(recentPage.page + 1)}>
-              Volgende
+              {t("visits.next")}
             </Button>
           </div>
         )}
       </div>
     </section>
+  );
+}
+
+function countryLabel(code: string): string {
+  try {
+    return new Intl.DisplayNames(undefined, { type: "region" }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
+
+/** Compact horizontal bars for one breakdown (countries, referrers, devices). */
+function BarList({ title, empty, rows }: { title: string; empty: string; rows: Array<{ key: string; label: string; value: number }> }) {
+  const max = Math.max(1, ...rows.map((r) => r.value));
+  return (
+    <div className="rounded-xl border border-border p-3">
+      <p className="mb-2 text-[11px] uppercase tracking-wide text-muted-foreground">{title}</p>
+      {rows.length > 0 ? (
+        <ul className="space-y-1.5">
+          {rows.map((r) => (
+            <li key={r.key} className="flex items-center gap-2 text-xs">
+              <span className="w-28 shrink-0 truncate" title={r.label}>{r.label}</span>
+              <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+                <span className="block h-full rounded-full bg-primary/70" style={{ width: `${(r.value / max) * 100}%` }} />
+              </span>
+              <span className="w-8 shrink-0 text-right tabular-nums text-muted-foreground">{r.value}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-xs text-muted-foreground">{empty}</p>
+      )}
+    </div>
   );
 }
