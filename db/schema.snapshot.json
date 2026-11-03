@@ -13038,6 +13038,117 @@
     },
     {
       "schema": "public",
+      "name": "platform_feature_switches",
+      "columns": [
+        {
+          "name": "feature",
+          "type": "text",
+          "notNull": true,
+          "default": null,
+          "identity": null,
+          "generated": null
+        },
+        {
+          "name": "enabled",
+          "type": "boolean",
+          "notNull": true,
+          "default": "true",
+          "identity": null,
+          "generated": null
+        },
+        {
+          "name": "note",
+          "type": "text",
+          "notNull": false,
+          "default": null,
+          "identity": null,
+          "generated": null
+        },
+        {
+          "name": "updated_by",
+          "type": "uuid",
+          "notNull": false,
+          "default": null,
+          "identity": null,
+          "generated": null
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "notNull": true,
+          "default": "now()",
+          "identity": null,
+          "generated": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "platform_feature_switches_feature_check",
+          "kind": "c",
+          "def": "CHECK ((feature ~ '^[a-z][a-z0-9_]{1,40}$'::text))"
+        },
+        {
+          "name": "platform_feature_switches_note_check",
+          "kind": "c",
+          "def": "CHECK (((note IS NULL) OR (char_length(note) <= 300)))"
+        },
+        {
+          "name": "platform_feature_switches_pkey",
+          "kind": "p",
+          "def": "PRIMARY KEY (feature)"
+        },
+        {
+          "name": "platform_feature_switches_updated_by_fkey",
+          "kind": "f",
+          "def": "FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL"
+        }
+      ],
+      "indexes": [],
+      "triggers": [],
+      "rls": true,
+      "forceRls": false,
+      "policies": [
+        {
+          "name": "platform_features_admin_insert",
+          "permissive": true,
+          "roles": [
+            "rout_app"
+          ],
+          "cmd": "INSERT",
+          "using": null,
+          "check": "(EXISTS ( SELECT 1\n   FROM user_roles r\n  WHERE ((r.user_id = rout_current_user_id()) AND ((r.role)::text = 'admin'::text))))"
+        },
+        {
+          "name": "platform_features_admin_update",
+          "permissive": true,
+          "roles": [
+            "rout_app"
+          ],
+          "cmd": "UPDATE",
+          "using": "(EXISTS ( SELECT 1\n   FROM user_roles r\n  WHERE ((r.user_id = rout_current_user_id()) AND ((r.role)::text = 'admin'::text))))",
+          "check": "(EXISTS ( SELECT 1\n   FROM user_roles r\n  WHERE ((r.user_id = rout_current_user_id()) AND ((r.role)::text = 'admin'::text))))"
+        },
+        {
+          "name": "platform_features_read",
+          "permissive": true,
+          "roles": [
+            "rout_app"
+          ],
+          "cmd": "SELECT",
+          "using": "true",
+          "check": null
+        }
+      ],
+      "grants": {
+        "rout_app": [
+          "INSERT",
+          "SELECT",
+          "UPDATE"
+        ]
+      }
+    },
+    {
+      "schema": "public",
       "name": "platform_integration_switches",
       "columns": [
         {
