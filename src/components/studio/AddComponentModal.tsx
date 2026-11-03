@@ -44,6 +44,7 @@ export const COMPONENT_LIBRARY: LibraryGroup[] = [
       { kind: "instagram", tag: "socials", label: "Socials icoon-rij", note: "Instagram, TikTok, X, LinkedIn, …" },
       { kind: "text", tag: "opmaak", label: "Tekst / Tussenkop", note: "Intro, kop of aankondiging", isNew: true },
       { kind: "spacer", tag: "opmaak", label: "Scheidingslijn / Spacer", note: "Rust tussen secties", isNew: true },
+      { kind: "countdown", tag: "opmaak", label: "Aftelklok", note: "Tel af naar een lancering of event", isNew: true },
       { kind: "vcard", tag: "links", label: "vCard contactkaart", note: "Eén tik → in de contacten" },
     ],
   },
