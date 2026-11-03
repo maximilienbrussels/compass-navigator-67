@@ -40,8 +40,9 @@ const FREE_DEMO: DemoProfile = {
     blocks: [
       { id: "f1", kind: "newsletter", label: "Nieuwsbrief", value: "" },
       { id: "f2", kind: "web", label: "Cal.com boeking", value: "https://cal.com/rout" },
-      { id: "f3", kind: "instagram", label: "Instagram", value: "routstudio" },
-      { id: "f4", kind: "web", label: "Pixelfed", value: "https://pixelfed.social/routstudio" },
+      { id: "f5", kind: "countdown", label: "Lancering", value: "2099-01-01T00:00:00.000Z" },
+      { id: "f3", kind: "instagram", label: "Instagram", value: "routstudio", size: "small" },
+      { id: "f4", kind: "web", label: "Pixelfed", value: "https://pixelfed.social/routstudio", size: "small" },
     ],
   },
 };
