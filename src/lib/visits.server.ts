@@ -1,4 +1,5 @@
 import { sql } from "@/lib/neon";
+import { referrerDomainOf } from "@/lib/visit-referrer";
 
 /**
  * Bezoekregistratie voor publieke profielen (root én alias).
@@ -20,6 +21,9 @@ export type RecordVisitInput = {
   ip?: string | null;
   userAgent?: string | null;
   country?: string | null;
+  /** document.referrer from the browser; reduced to a bare domain before storage. */
+  referrer?: string | null;
+  host?: string | null;
 };
 
 /** The hashing salt is a required secret: a guessable default would let anyone reverse visitor hashes. */
@@ -103,14 +107,15 @@ export async function recordVisit(input: RecordVisitInput): Promise<{ recorded: 
 
   await sql`
     insert into public.profile_visits
-      (profile_user_id, handle, space, path, locale, country, device, visitor_hash)
+      (profile_user_id, handle, space, path, locale, country, device, visitor_hash, referrer_domain)
     values (
       ${ownerId}, ${handle}, ${input.space === "root" ? "root" : "alias"},
       ${(input.path ?? "").slice(0, 200) || null},
       ${(input.locale ?? "").slice(0, 10).toLowerCase() || null},
       ${(input.country ?? "").slice(0, 2).toUpperCase() || null},
       ${deviceFrom(userAgent)},
-      ${visitorHash}
+      ${visitorHash},
+      ${referrerDomainOf(input.referrer, input.host ? [input.host.split(":")[0] ?? ""] : [])}
     )
   `;
   return { recorded: true };
@@ -124,6 +129,8 @@ export type VisitStats = {
   perDay: Array<{ date: string; visits: number }>;
   perLanguage: Array<{ locale: string; visits: number }>;
   perCountry: Array<{ country: string; visits: number }>;
+  perReferrer: Array<{ domain: string; visits: number }>;
+  perDevice: Array<{ device: string; visits: number }>;
   recent: Array<{
     at: string;
     handle: string;
@@ -143,6 +150,8 @@ const EMPTY: VisitStats = {
   perDay: [],
   perLanguage: [],
   perCountry: [],
+  perReferrer: [],
+  perDevice: [],
   recent: [],
 };
 
@@ -162,7 +171,7 @@ export async function readVisitStats(
   const since = new Date(Date.now() - days * 86_400_000).toISOString();
   const spaceFilter = space === "all" ? null : space;
 
-  const [totals, perDayRows, perLangRows, perCountryRows, recentRows] = await Promise.all([
+  const [totals, perDayRows, perLangRows, perCountryRows, recentRows, perRefRows, perDeviceRows] = await Promise.all([
     sql`
       select count(*)::int as total,
              count(distinct visitor_hash)::int as unique_visitors,
@@ -206,6 +215,22 @@ export async function readVisitStats(
          and (${spaceFilter}::text is null or space = ${spaceFilter})
        order by created_at desc limit 50
     ` as Promise<Row[]>,
+    sql`
+      select coalesce(referrer_domain, '') as domain, count(*)::int as visits
+        from public.profile_visits
+       where profile_user_id = ${userId}
+         and created_at >= ${since}
+         and (${spaceFilter}::text is null or space = ${spaceFilter})
+       group by 1 order by 2 desc limit 12
+    ` as Promise<Row[]>,
+    sql`
+      select coalesce(device, 'unknown') as device, count(*)::int as visits
+        from public.profile_visits
+       where profile_user_id = ${userId}
+         and created_at >= ${since}
+         and (${spaceFilter}::text is null or space = ${spaceFilter})
+       group by 1 order by 2 desc limit 5
+    ` as Promise<Row[]>,
   ]);
 
   const t = totals[0] ?? {};
@@ -229,6 +254,8 @@ export async function readVisitStats(
       country: String(r["country"]),
       visits: Number(r["visits"] ?? 0),
     })),
+    perReferrer: perRefRows.map((r) => ({ domain: String(r["domain"] ?? ""), visits: Number(r["visits"] ?? 0) })),
+    perDevice: perDeviceRows.map((r) => ({ device: String(r["device"] ?? "unknown"), visits: Number(r["visits"] ?? 0) })),
     recent: recentRows.map((r) => ({
       at: new Date(String(r["created_at"])).toISOString(),
       handle: String(r["handle"]),
