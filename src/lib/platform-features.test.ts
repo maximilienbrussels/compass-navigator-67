@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { resolvePlatformFeatures, isPlatformFeatureId } from "./platform-features";
-import { designButtonStyle, normalizeProfileDesign } from "./profile-design";
+import { designButtonStyle, normalizeDesignPrefs } from "./profile-design";
 import { applyScopedPatch, DEFAULT_GLASS } from "./theme-engine";
 
 const theme = { bg: "#ffffff", card: "#f5f5f5", text: "#111111", border: "#dddddd", accent: "#3366ff" };
@@ -17,7 +17,7 @@ describe("platform feature switches", () => {
 
 describe("button border colour (Knoprand)", () => {
   it("is off by default and overrides the border only when switched on", () => {
-    const base = { ...normalizeProfileDesign({}), buttonsCustom: true, buttonVariant: "fill" as const };
+    const base = { ...normalizeDesignPrefs({}), buttonsCustom: true, buttonVariant: "fill" as const };
     expect(designButtonStyle(base, theme)?.["border"]).toBe("1px solid transparent");
     expect(designButtonStyle({ ...base, buttonBorderColor: "#ff0000" }, theme)?.["border"]).toBe("1px solid #ff0000");
     expect(designButtonStyle({ ...base, buttonVariant: "hard", buttonBorderColor: "#ff0000" }, theme)?.["border"]).toBe("2px solid #ff0000");
